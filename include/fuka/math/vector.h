@@ -91,4 +91,42 @@ TVector<T1, Dimension> operator/(T2 lhs, const TVector<T1, Dimension> &rhs) {
   return TVector<T1, Dimension>(lhs) / rhs;
 }
 
+template<typename Scalar, int Dimension>
+Scalar dot(const TVector<Scalar, Dimension> &lhs, const TVector<Scalar, Dimension> &rhs) {
+  return lhs.dot(rhs);
+}
+
+template<typename Scalar, int Dimension>
+TVector<Scalar, Dimension> cross(const TVector<Scalar, Dimension> &lhs, const TVector<Scalar, Dimension> &rhs) {
+  return lhs.cross(rhs);
+}
+
+template<typename Scalar, int Dimension> auto hprod(const TVector<Scalar, Dimension> &v) {
+  return v.prod();
+}
+
+template<typename Scalar, int Dimension> auto hsum(const TVector<Scalar, Dimension> &v) {
+  return v.sum();
+}
+
+template<typename Scalar, int Dimension> auto hmax(const TVector<Scalar, Dimension> &v) {
+  return v.maxCoeff();
+}
+
+template<typename Scalar, int Dimension> auto hmin(const TVector<Scalar, Dimension> &v) {
+  return v.minCoeff();
+}
+
+template<typename Scalar, int Dimension> auto norm(const TVector<Scalar, Dimension> &v) {
+  return v.norm();
+}
+
+template<typename Scalar, int Dimension> auto squared_norm(const TVector<Scalar, Dimension> &v) {
+  return v.squaredNorm();
+}
+
+template<typename Scalar, typename Scalar2, int Dimension> auto clamp(const TVector<Scalar, Dimension> &v, Scalar2 vmin, Scalar2 vmax) {
+  return TVector<Scalar, Dimension>(v.cwiseMin(TVector<Scalar, Dimension>(vmax)).cwiseMax(TVector<Scalar, Dimension>(vmin)));
+}
+
 }

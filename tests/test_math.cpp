@@ -34,5 +34,7 @@ int main() {
   std::cout << r5 << std::endl;
   std::cout << r6 << std::endl;
   std::cout << r7 << std::endl;
+
+  std::cout << fuka::clamp(v2, 1.5, 2.5) << std::endl;
   return 0;
 }
