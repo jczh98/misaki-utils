@@ -1,10 +1,12 @@
 #include <iostream>
 #include <chrono>
-#include <fuka/math/vector.h>
+#include <misaki/utils/math/vector.h>
+
+using namespace misaki;
 
 int main() {
-  fuka::TVector<float, 3> i1(1, 2, 3);
-  fuka::TVector<int, 3> f1(i1);
+  math::TVector<float, 3> i1(1, 2, 3);
+  math::TVector<int, 3> f1(i1);
   std::cout << f1 << std::endl;
 
   Eigen::Vector3f vv1(1, 1, 1);
@@ -14,8 +16,8 @@ int main() {
   auto end = std::chrono::system_clock::now();
   std::cout << std::chrono::duration_cast<std::chrono::nanoseconds >(end-now).count() << std::endl;
 
-  fuka::TVector<float, 3> v1(1);
-  fuka::TVector<float, 3> v2(1, 2, 3);
+  math::TVector<float, 3> v1(1);
+  math::TVector<float, 3> v2(1, 2, 3);
 
   now = std::chrono::system_clock::now();
   auto r1 = v1 * v2;
@@ -35,6 +37,6 @@ int main() {
   std::cout << r6 << std::endl;
   std::cout << r7 << std::endl;
 
-  std::cout << fuka::clamp(v2, 1.5, 2.5) << std::endl;
+  std::cout << math::clamp(v2, 1.5, 2.5) << std::endl;
   return 0;
 }

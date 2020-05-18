@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <Eigen/Dense>
 
-namespace fuka {
+namespace misaki::math {
 
 // ---------------------------Vector-------------------------------
 
