@@ -13,6 +13,8 @@ struct TVector : public Eigen::Matrix<Scalar, Dimension, 1> {
   using Base = Eigen::Matrix<Scalar, Dimension, 1>;
   using Self = TVector<Scalar, Dimension>;
 
+  TVector() { Base::setConstant(Scalar(0)); }
+
   template<typename Value, std::enable_if_t<std::is_arithmetic<Value>::value, int> = 0>
   TVector(Value value = (Value) 0) { Base::setConstant(Scalar(value)); }
 
