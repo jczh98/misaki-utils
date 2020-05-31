@@ -114,7 +114,7 @@ struct Transform {
 
 template <typename Float, int Size>
 std::ostream &operator<<(std::ostream &os, const Transform<Float, Size> &t) {
-  os << m_matrix.format(Eigen::IOFormat(4, 0, ", ", "\n", "", "", "[", "]"));
+  os << t.matrix().format(Eigen::IOFormat(4, 0, ", ", "\n", "", "", "[", "]"));
   return os;
 }
 
