@@ -1,6 +1,5 @@
 #pragma once
 
-#include "fwd.h"
 #include "transform.h"
 #include "vector.h"
 
@@ -122,7 +121,7 @@ struct TColor<Value_, 4> : Eigen::Array<Value_, 4, 1> {
   }
 };
 
-template <typename Value, int Size, std::enable_if_t<(Size==4||Size==3), int> = 0>
+template <typename Value, int Size, std::enable_if_t<(Size == 4 || Size == 3), int> = 0>
 std::ostream &operator<<(
     std::ostream &out, const TColor<Value, Size> &c) {
   out << c.to_string();

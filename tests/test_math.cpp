@@ -1,10 +1,11 @@
-#include <iostream>
+#include <misaki/utils/math.h>
+
 #include <chrono>
-#include <misaki/utils/math/vector.h>
+#include <iostream>
 
 using namespace misaki;
 
-int main() {
+void test_vector() {
   math::TVector<float, 3> i1(1, 2, 3);
   math::TVector<int, 3> f1(i1);
   std::cout << f1 << std::endl;
@@ -14,7 +15,7 @@ int main() {
   auto now = std::chrono::system_clock::now();
   auto rr1 = vv1.cwiseProduct(vv2);
   auto end = std::chrono::system_clock::now();
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds >(end-now).count() << std::endl;
+  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << std::endl;
 
   math::TVector<float, 3> v1(1);
   math::TVector<float, 3> v2(1, 2, 3);
@@ -22,7 +23,7 @@ int main() {
   now = std::chrono::system_clock::now();
   auto r1 = v1 * v2;
   end = std::chrono::system_clock::now();
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds >(end-now).count() << std::endl;
+  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << std::endl;
   auto r2 = 1 + v1;
   auto r3 = 1 - v1;
   auto r4 = 1 * v1;
@@ -38,5 +39,18 @@ int main() {
   std::cout << r7 << std::endl;
 
   std::cout << math::clamp(v2, 1.5, 2.5) << std::endl;
+}
+
+void test_tensor() {
+  using namespace misaki;
+  math::Tensor<float, 2> t2(math::TVector<int, 2>(2, 2));
+  auto t1 = math::Tensor<float, 2>::from_linear_indexed({2, 2}, [&](int i) {
+    return i * 1.5;
+  });
+  std::cout << t1.raw_data()[3] << std::endl;
+}
+
+int main() {
+  test_tensor();
   return 0;
 }
