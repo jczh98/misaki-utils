@@ -35,30 +35,6 @@ struct TVector : public Eigen::Matrix<Scalar, Dimension, 1> {
     return *this;
   }
 
-  Self operator+(const TVector<Scalar, Dimension> &rhs) {
-    Base rhs_ = rhs;
-    return TVector<Scalar, Dimension>(Base(*this) + rhs_);
-  }
-  Self operator-(const TVector<Scalar, Dimension> &rhs) {
-    Base rhs_ = rhs;
-    return TVector<Scalar, Dimension>(Base(*this) - rhs_);
-  }
-  Self operator*(const TVector<Scalar, Dimension> &rhs) {
-    return TVector<Scalar, Dimension>(this->cwiseProduct(rhs));
-  }
-  Self operator/(const TVector<Scalar, Dimension> &rhs) {
-    return TVector<Scalar, Dimension>((this->array() / rhs.array()).matrix());
-  }
-
-  template <typename T>
-  Self operator+(T rhs) {
-    return this->operator+(Self(rhs));
-  }
-  template <typename T>
-  Self operator-(T rhs) {
-    return this->operator-(Self(rhs));
-  }
-
   std::string to_string() const {
     std::string result;
     for (size_t i = 0; i < Dimension; ++i) {
@@ -76,26 +52,78 @@ std::ostream &operator<<(
   return out;
 }
 
-template <typename T1, typename T2, int Dimension>
-TVector<T1, Dimension> operator+(T2 lhs, const TVector<T1, Dimension> &rhs) {
-  return TVector<T1, Dimension>(lhs) + rhs;
+// Unary operators
+template <typename T, int D>
+TVector<T, D> operator-(const TVector<T, D> &vec) noexcept {
+  TVector<T, D>::Base vec_ = vec;
+  return TVector<T, D>(vec_);
 }
 
-template <typename T1, typename T2, int Dimension>
-TVector<T1, Dimension> operator-(T2 lhs, const TVector<T1, Dimension> &rhs) {
-  return TVector<T1, Dimension>(lhs) - rhs;
+// Binary operators for same type
+template <typename T, int D>
+TVector<T, D> operator+(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+  TVector<T, D>::Base lhs_ = lhs, rhs_ = rhs;
+  return TVector<T, D>(lhs_ + rhs_);
 }
 
-template <typename T1, typename T2, int Dimension>
-TVector<T1, Dimension> operator*(T2 lhs, const TVector<T1, Dimension> &rhs) {
-  return TVector<T1, Dimension>(lhs) * rhs;
+template <typename T, int D>
+TVector<T, D> operator-(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+  TVector<T, D>::Base lhs_ = lhs, rhs_ = rhs;
+  return TVector<T, D>(lhs_ - rhs_);
 }
 
-template <typename T1, typename T2, int Dimension>
-TVector<T1, Dimension> operator/(T2 lhs, const TVector<T1, Dimension> &rhs) {
-  return TVector<T1, Dimension>(lhs) / rhs;
+template <typename T, int D>
+TVector<T, D> operator+(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+  return TVector<T, D>(lhs.cwiseProduct(rhs));
 }
 
+template <typename T, int D>
+TVector<T, D> operator+(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+  return TVector<T, D>((lhs.array() / rhs.array()).matrix());
+}
+
+// Binary operators for different type
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator+(const TVector<T1, D> &lhs, T2 rhs) noexcept {
+  return lhs_ + TVector<T1, D>(rhs_);
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator-(const TVector<T1, D> &lhs, T2 rhs) noexcept {
+  return lhs_ - TVector<T1, D>(rhs_);
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator*(const TVector<T1, D> &lhs, T2 rhs) noexcept {
+  return lhs_ * TVector<T1, D>(rhs_);
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator/(const TVector<T1, D> &lhs, T2 rhs) noexcept {
+  return lhs_ / TVector<T1, D>(rhs_);
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator+(T2 lhs, const TVector<T1, D> &rhs) {
+  return TVector<T1, D>(lhs) + rhs;
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator-(T2 lhs, const TVector<T1, D> &rhs) {
+  return TVector<T1, D>(lhs) - rhs;
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator*(T2 lhs, const TVector<T1, D> &rhs) {
+  return TVector<T1, D>(lhs) * rhs;
+}
+
+template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
+TVector<T1, D> operator/(T2 lhs, const TVector<T1, D> &rhs) {
+  return TVector<T1, D>(lhs) / rhs;
+}
+
+// Math functions
 template <typename Scalar, int Dimension>
 Scalar dot(const TVector<Scalar, Dimension> &lhs, const TVector<Scalar, Dimension> &rhs) {
   return lhs.dot(rhs);
@@ -104,6 +132,36 @@ Scalar dot(const TVector<Scalar, Dimension> &lhs, const TVector<Scalar, Dimensio
 template <typename Scalar, int Dimension>
 TVector<Scalar, Dimension> cross(const TVector<Scalar, Dimension> &lhs, const TVector<Scalar, Dimension> &rhs) {
   return lhs.cross(rhs);
+}
+
+template <typename T, int D>
+TVector<T, D> cwise_max(const TVector<T, D> &vec, T val) {
+  return vec.cwiseMax(TVector<T, D>(val));
+}
+
+template <typename T, int D>
+TVector<T, D> cwise_max(const TVector<T, D> &lhs, const TVector<T, D> &rhs) {
+  return lhs.cwiseMax(rhs);
+}
+
+template <typename T, int D>
+TVector<T, D> cwise_min(const TVector<T, D> &vec, T val) {
+  return vec.cwiseMax(TVector<T, D>(val));
+}
+
+template <typename T, int D>
+TVector<T, D> cwise_min(const TVector<T, D> &lhs, const TVector<T, D> &rhs) {
+  return lhs.cwiseMax(rhs);
+}
+
+template <typename T, int D>
+TVector<int, D> ceil2int(const TVector<T, D> &vec) {
+  return TVector<int, D>(vec.ceil());
+}
+
+template <typename T, int D>
+TVector<int, D> floor2int(const TVector<T, D> &vec) {
+  return TVector<int, D>(vec.floor());
 }
 
 template <typename Scalar, int Dimension>

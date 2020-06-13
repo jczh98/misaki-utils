@@ -58,6 +58,40 @@ class Tensor {
     m_data_size = 0;
   }
 
+  Value &at(const Index &index) noexcept {
+    assert(m_data != nullptr);
+    if constexpr (Dimension == 2) {
+      const int idx = index[0] * shape[1] + index[1];
+      assert(idx < m_data_size);
+      return m_data[idx];
+    } else {
+      int idx = 0, base = 1;
+      for (int i = Dimension - 1; i >= 0; --i) {
+        idx += index[i] * base;
+        base *= m_shape[i];
+      }
+      assert(idx < m_data_size);
+      return m_data[idx];
+    }
+  }
+
+  const Value &at(const Index &index) const noexcept {
+    assert(m_data != nullptr);
+    if constexpr (Dimension == 2) {
+      const int idx = index[0] * shape[1] + index[1];
+      assert(idx < m_data_size);
+      return m_data[idx];
+    } else {
+      int idx = 0, base = 1;
+      for (int i = Dimension - 1; i >= 0; --i) {
+        idx += index[i] * base;
+        base *= m_shape[i];
+      }
+      assert(idx < m_data_size);
+      return m_data[idx];
+    }
+  }
+
   const Index &shape() const noexcept { return m_shape; }
   int data_size() const noexcept { return m_data_size; }
   Value *raw_data() noexcept { return m_data.get(); }
