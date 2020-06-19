@@ -128,6 +128,21 @@ std::ostream &operator<<(
   return out;
 }
 
+template <typename Float>
+TColor<Float, 3> linear_to_srgb(const TColor<Float, 3> &rgb) {
+  TColor<Float, 3> result = rgb;
+  auto transform = [&](Float &v) {
+    if (v <= 0.0031308f)
+      v = 12.92f * v;
+    else
+      v = (1.0f + 0.055f) * std::pow(v, 1.0f / 2.4f) - 0.055f;
+  };
+  transform(result.x());
+  transform(result.y());
+  transform(result.z());
+  return result;
+}
+
 // Convert ITU-R Rec. BT.709 linear RGB to XYZ tristimulus values
 template <typename Float>
 TVector<Float, 3> srgb_to_xyz(const TColor<Float, 3> &rgb) {
