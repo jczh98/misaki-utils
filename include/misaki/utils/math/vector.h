@@ -73,34 +73,34 @@ TVector<T, D> operator-(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noex
 }
 
 template <typename T, int D>
-TVector<T, D> operator+(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+TVector<T, D> operator*(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
   return TVector<T, D>(lhs.cwiseProduct(rhs));
 }
 
 template <typename T, int D>
-TVector<T, D> operator+(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
+TVector<T, D> operator/(const TVector<T, D> &lhs, const TVector<T, D> &rhs) noexcept {
   return TVector<T, D>((lhs.array() / rhs.array()).matrix());
 }
 
 // Binary operators for different type
 template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
 TVector<T1, D> operator+(const TVector<T1, D> &lhs, T2 rhs) noexcept {
-  return lhs_ + TVector<T1, D>(rhs_);
+  return lhs + TVector<T1, D>(rhs);
 }
 
 template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
 TVector<T1, D> operator-(const TVector<T1, D> &lhs, T2 rhs) noexcept {
-  return lhs_ - TVector<T1, D>(rhs_);
+  return lhs - TVector<T1, D>(rhs);
 }
 
 template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
 TVector<T1, D> operator*(const TVector<T1, D> &lhs, T2 rhs) noexcept {
-  return lhs_ * TVector<T1, D>(rhs_);
+  return lhs * TVector<T1, D>(rhs);
 }
 
 template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
 TVector<T1, D> operator/(const TVector<T1, D> &lhs, T2 rhs) noexcept {
-  return lhs_ / TVector<T1, D>(rhs_);
+  return lhs / TVector<T1, D>(rhs);
 }
 
 template <typename T1, typename T2, int D, std::enable_if_t<std::is_arithmetic<T2>::value, int> = 0>
@@ -156,12 +156,12 @@ TVector<T, D> cwise_min(const TVector<T, D> &lhs, const TVector<T, D> &rhs) {
 
 template <typename T, int D>
 TVector<int, D> ceil2int(const TVector<T, D> &vec) {
-  return TVector<int, D>(vec.ceil());
+  return TVector<int, D>(TVector<T, D>(vec.array().ceil().matrix()));
 }
 
 template <typename T, int D>
 TVector<int, D> floor2int(const TVector<T, D> &vec) {
-  return TVector<int, D>(vec.floor());
+  return TVector<int, D>(TVector<T, D>(vec.array().floor().matrix()));
 }
 
 template <typename Scalar, int Dimension>

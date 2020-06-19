@@ -61,7 +61,7 @@ class Tensor {
   Value &at(const Index &index) noexcept {
     assert(m_data != nullptr);
     if constexpr (Dimension == 2) {
-      const int idx = index[0] * shape[1] + index[1];
+      const int idx = index[0] * m_shape[1] + index[1];
       assert(idx < m_data_size);
       return m_data[idx];
     } else {
@@ -78,7 +78,7 @@ class Tensor {
   const Value &at(const Index &index) const noexcept {
     assert(m_data != nullptr);
     if constexpr (Dimension == 2) {
-      const int idx = index[0] * shape[1] + index[1];
+      const int idx = index[0] * m_shape[1] + index[1];
       assert(idx < m_data_size);
       return m_data[idx];
     } else {

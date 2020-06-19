@@ -39,6 +39,8 @@ void test_vector() {
   std::cout << r7 << std::endl;
 
   std::cout << math::clamp(v2, 1.5, 2.5) << std::endl;
+  math::TVector<float, 3> vn(1.5, 2.5, 3.5);
+  std::cout << math::floor2int(vn) << std::endl;
 }
 
 void test_tensor() {
@@ -51,6 +53,6 @@ void test_tensor() {
 }
 
 int main() {
-  test_tensor();
+  test_vector();
   return 0;
 }
