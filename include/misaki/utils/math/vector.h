@@ -56,7 +56,7 @@ std::ostream &operator<<(
 template <typename T, int D>
 TVector<T, D> operator-(const TVector<T, D> &vec) noexcept {
   TVector<T, D>::Base vec_ = vec;
-  return TVector<T, D>(vec_);
+  return TVector<T, D>(-vec_);
 }
 
 // Binary operators for same type
@@ -146,12 +146,12 @@ TVector<T, D> cwise_max(const TVector<T, D> &lhs, const TVector<T, D> &rhs) {
 
 template <typename T, int D>
 TVector<T, D> cwise_min(const TVector<T, D> &vec, T val) {
-  return vec.cwiseMax(TVector<T, D>(val));
+  return vec.cwiseMin(TVector<T, D>(val));
 }
 
 template <typename T, int D>
 TVector<T, D> cwise_min(const TVector<T, D> &lhs, const TVector<T, D> &rhs) {
-  return lhs.cwiseMax(rhs);
+  return lhs.cwiseMin(rhs);
 }
 
 template <typename T, int D>

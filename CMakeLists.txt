@@ -20,3 +20,6 @@ target_include_directories(misaki-utils PUBLIC
 
 add_executable(test_math tests/test_math.cpp)
 target_link_libraries(test_math misaki-utils)
+
+add_executable(test_image tests/test_image.cpp)
+target_link_libraries(test_image misaki-utils)

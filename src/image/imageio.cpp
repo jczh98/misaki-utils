@@ -31,9 +31,22 @@ math::Tensor<Color4, 2> read_rgba_image(const std::string &filename) {
 }
 
 void write_rgb_image(const std::string &filename, const math::Tensor<math::TColor<float, 3>, 2> &data) {
-  if (!stbi_write_png(filename.c_str(), data.shape()[1], data.shape()[0], 3, data.raw_data(), 0)) {
+  int width = data.shape()[1], height = data.shape()[0];
+  uint8_t *rgbs = new uint8_t[width * height * 3];
+  uint8_t *dst = rgbs;
+  for (int y = height - 1; y >= 0; --y)
+    for (int x = 0; x < width; ++x) {
+      dst[0] = (uint8_t)(data.at({y, x})[0] * 255.0);
+      dst[1] = (uint8_t)(data.at({y, x})[1] * 255.0);
+      dst[2] = (uint8_t)(data.at({y, x})[2] * 255.0);
+      dst += 3;
+    }
+
+  if (!stbi_write_png(filename.c_str(), width, height, 3, rgbs, 3 * width)) {
+    delete[] rgbs;
     throw std::runtime_error("Failed to write to PNG file");
   }
+  delete[] rgbs;
 }
 
 void write_rgba_image(const std::string &filename, const math::Tensor<math::TColor<float, 4>, 2> &data) {
