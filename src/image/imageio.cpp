@@ -34,7 +34,7 @@ void write_rgb_image(const std::string &filename, const math::Tensor<math::TColo
   int width = data.shape()[1], height = data.shape()[0];
   uint8_t *rgbs = new uint8_t[width * height * 3];
   uint8_t *dst = rgbs;
-  for (int y = height - 1; y >= 0; --y)
+  for (int y = 0; y < height; ++y)
     for (int x = 0; x < width; ++x) {
       dst[0] = (uint8_t)math::clamp(data.at({y, x})[0] * 255.0, 0., 255.);
       dst[1] = (uint8_t)math::clamp(data.at({y, x})[1] * 255.0, 0., 255.);
