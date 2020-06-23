@@ -8,12 +8,12 @@
 namespace misaki::math {
 
 template <typename Float>
-struct Frame {
+struct TFrame {
   using Vector3 = TVector<Float, 3>;
 
   Vector3 s, t, n;
 
-  Frame(const Vector3 &v) : n(v) {
+  TFrame(const Vector3 &v) : n(v) {
     std::tie(s, t) = coordinate_system<Float>(v);
   }
 
@@ -39,7 +39,7 @@ struct Frame {
 };
 
 template <typename Float>
-std::ostream &operator<<(std::ostream &os, const Frame<Float> &f) {
+std::ostream &operator<<(std::ostream &os, const TFrame<Float> &f) {
   os << "Frame[" << std::endl
      << "  s = " << string::indent(f.s.to_string(), 6) << "," << std::endl
      << "  t = " << string::indent(f.t.to_string(), 6) << "," << std::endl

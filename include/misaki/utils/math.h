@@ -1,5 +1,6 @@
 #pragma once
 
+#include "math/bbox.h"
 #include "math/color.h"
 #include "math/frame.h"
 #include "math/random.h"
