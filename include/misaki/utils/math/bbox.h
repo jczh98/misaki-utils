@@ -18,8 +18,8 @@ struct TBoundingBox {
   }
 
   void reset() {
-    pmin.setConstant(std::numeric_limits<Value_>::infinity());
-    pmax.setConstant(-std::numeric_limits<Value_>::infinity());
+    pmin.setConstant(std::numeric_limits<Value>::infinity());
+    pmax.setConstant(-std::numeric_limits<Value>::infinity());
   }
 
   template <typename T>
