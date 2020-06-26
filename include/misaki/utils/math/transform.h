@@ -87,7 +87,7 @@ struct Transform {
     auto dir = (target - origin).normalized();
     auto left = up.normalized().cross(dir).normalized();
     auto new_up = dir.cross(left).normalized();
-    Matrix4 result;
+    Eigen::Matrix4f result;
     result << left, new_up, dir, origin,
         0, 0, 0, 1;
     return Transform(result);
