@@ -165,6 +165,11 @@ TVector<int, D> floor2int(const TVector<T, D> &vec) {
 }
 
 template <typename Scalar, int Dimension>
+TVector<Scalar, Dimension> abs(const TVector<Scalar, Dimension> &v) {
+  return v.cwiseAbs();
+}
+
+template <typename Scalar, int Dimension>
 auto normalize(const TVector<Scalar, Dimension> &v) {
   return v.normalized();
 }

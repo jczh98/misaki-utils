@@ -2,6 +2,7 @@
 
 #include "math/bbox.h"
 #include "math/color.h"
+#include "math/distribution.h"
 #include "math/frame.h"
 #include "math/random.h"
 #include "math/scalar.h"

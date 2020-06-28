@@ -28,4 +28,9 @@ MSK_INLINE auto rag_to_deg(const T &v) {
   return v * T(180 / Pi<T>);
 }
 
+template <typename T>
+MSK_INLINE auto safe_sqrt(const T &a) {
+  return std::sqrt(std::max(a, T(0)));
+}
+
 }  // namespace misaki::math
