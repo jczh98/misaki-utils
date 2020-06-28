@@ -170,7 +170,7 @@ TVector<Scalar, Dimension> abs(const TVector<Scalar, Dimension> &v) {
 }
 
 template <typename Scalar, int Dimension>
-auto normalize(const TVector<Scalar, Dimension> &v) {
+TVector<Scalar, Dimension> normalize(const TVector<Scalar, Dimension> &v) {
   return v.normalized();
 }
 

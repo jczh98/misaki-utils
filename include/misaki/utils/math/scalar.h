@@ -33,4 +33,31 @@ MSK_INLINE auto safe_sqrt(const T &a) {
   return std::sqrt(std::max(a, T(0)));
 }
 
+template <typename Predicate>
+uint32_t find_interval(uint32_t size, const Predicate &pred) {
+  int first = 0, len = size;
+  while (len > 0) {
+    int half = len >> 1, middle = first + half;
+    if (pred(middle)) {
+      first = middle + 1;
+      len -= half + 1;
+    } else
+      len = half;
+  }
+  return std::clamp<int>(first - 1, 0, size - 2);
+}
+
+// Search the interval of [begin, end)
+template <typename Predicate>
+uint32_t binary_search(uint32_t begin, uint32_t end, const Predicate &pred) {
+  while (begin < end) {
+    uint32_t middle = begin + (end - begin) >> 1;
+    if (pred(middle)) {
+      begin = middle + 1;
+    } else
+      end = middle;
+  }
+  return begin;
+}
+
 }  // namespace misaki::math

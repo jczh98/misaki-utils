@@ -39,8 +39,10 @@ struct DiscreteDistribution {
 
   uint32_t sample(Float value) const {
     value *= m_sum;
-    const auto it = std::upper_bound(m_cdf.begin(), m_cdf.end(), value);
-    return std::clamp(uint32_t(std::distance(m_cdf.begin(), it)) - 1, m_valid.x(), m_valid.y() + 1);
+    return math::binary_search(m_valid.x(), m_valid.y() + 1,
+                               [&](uint32_t index) {
+                                 return m_cdf[index] < value;
+                               });
   }
 
   Float eval_pmf(uint32_t index) const {
