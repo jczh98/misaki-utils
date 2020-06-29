@@ -129,18 +129,13 @@ std::ostream &operator<<(
 }
 
 template <typename Float>
-TColor<Float, 3> linear_to_srgb(const TColor<Float, 3> &rgb) {
-  TColor<Float, 3> result = rgb;
-  auto transform = [&](Float &v) {
-    if (v <= 0.0031308f)
-      v = 12.92f * v;
-    else
-      v = (1.0f + 0.055f) * std::pow(v, 1.0f / 2.4f) - 0.055f;
-  };
-  transform(result.x());
-  transform(result.y());
-  transform(result.z());
-  return result;
+TColor<Float, 3> linear_to_srgb(const TColor<Float, 3> &xyz) {
+  TVector<Float, 3> result = TVector<Float, 3>(xyz.r(), xyz.g(), xyz.b());
+  TMatrix<Float, 3> M;
+  M << 3.240479f, -1.537150f, -0.498535f,
+      -0.969256f, 1.875991f, 0.041556f,
+      0.055648f, -0.204043f, 1.057311f;
+  return M * result;
 }
 
 // Convert ITU-R Rec. BT.709 linear RGB to XYZ tristimulus values
