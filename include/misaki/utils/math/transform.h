@@ -52,7 +52,7 @@ struct Transform {
   }
 
   Transform<Float, Size - 1> extract() const {
-    Transform<Size - 1> result;
+    Transform<Float, Size - 1> result;
     result.m_matrix = m_matrix.topLeftCorner<Size - 1, Size - 1>();
     result.m_inverse_matrix = m_inverse_matrix.topLeftCorner<Size - 1, Size - 1>();
     return result;
