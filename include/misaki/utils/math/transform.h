@@ -27,6 +27,10 @@ struct Transform {
 
   Transform inverse() const { return Transform(m_inverse_matrix, m_matrix); }
 
+  TVector<Float, Size - 1> translation() const {
+    return m_matrix.col(Size - 1).head<Size - 1>();
+  }
+
   TVector<Float, Size - 1> transform_affine_point(const TVector<Float, Size - 1> &p) const {
     TVector<Float, Size> result;
     for (int i = 0; i < Size - 1; i++) result.coeffRef(i) = p.coeff(i);
