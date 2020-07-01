@@ -37,6 +37,10 @@ class Tensor {
     return result;
   }
 
+  static Self from_array(const Index &shape, const Value *data) {
+    return from_linear_indexed(shape, [&](int i) { return data[i]; });
+  }
+
   Self &operator=(const Self &copy_from) {
     if (m_shape != copy_from.m_shape) {
       std::copy(copy_from.m_data.get(), copy_from.m_data.get() + copy_from.m_data_size, m_data.get());

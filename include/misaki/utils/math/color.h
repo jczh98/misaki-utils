@@ -32,6 +32,10 @@ struct TColor<Value_, 3> : Eigen::Array<Value_, 3, 1> {
   decltype(auto) b() const { return z(); }
   decltype(auto) b() { return z(); }
 
+  Value_ luminance() const {
+    return coeff(0) * 0.212671f + coeff(1) * 0.715160f + coeff(2) * 0.072169f;
+  }
+
   TColor<Value_, 3> to_srgb() const {
     TColor<Value_, 3> result;
     for (int i = 0; i < 3; ++i) {
