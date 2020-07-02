@@ -48,6 +48,18 @@ struct TColor<Value_, 3> : Eigen::Array<Value_, 3, 1> {
     return result;
   }
 
+  TColor<Value_, 3> to_linear() const {
+    TColor<Value_, 3> result;
+    for (int i = 0; i < 3; ++i) {
+      float value = coeff(i);
+      if (value <= 0.04045f)
+        result[i] = value * (1.0f / 12.92f);
+      else
+        result[i] = std::pow((value + 0.055f) * (1.0f / 1.055f), 2.4f);
+    }
+    return result;
+  }
+
   bool is_valid() const {
     for (int i = 0; i < 3; i++) {
       Value_ value = coeff(i);
