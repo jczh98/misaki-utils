@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>
+#include <numeric>
+
 #include "scalar.h"
 #include "vector.h"
 
@@ -78,6 +81,64 @@ struct DiscreteDistribution {
   Float m_sum = 0.f;
   Float m_normalization = 0.f;
   TVector<uint32_t, 2> m_valid;
+};
+
+template <typename Float>
+struct Distribution1D {
+  std::vector<Float> m_cdf{0};
+  void init(const Float *data, int n) {
+    m_cdf.clear();
+    m_cdf.push_back(0.f);
+    std::partial_sum(data, data + n, std::back_inserter(m_cdf));
+    const Float inv_sum = 1.f / m_cdf.back();
+    for (auto &cdf : m_cdf) cdf *= inv_sum;
+  }
+
+  const std::vector<Float> &cdf() const { return m_cdf; }
+
+  Float pmf(int i) const {
+    return (i < 0 || i + 1 >= int(m_cdf.size())) ? 0 : m_cdf[i + 1] - m_cdf[i];
+  }
+
+  uint32_t sample(Float u) const {
+    const auto it = std::upper_bound(m_cdf.begin(), m_cdf.end(), u);
+    return std::clamp(int(std::distance(m_cdf. begin(), it)) - 1, 0, int(m_cdf.size()) - 2);
+  }
+
+  std::pair<uint32_t, Float> sample_reuse(Float u) const {
+    uint32_t index = sample(u);
+    return {index, (u - m_cdf[index]) / pmf(index)};
+  }
+};
+
+template <typename Float>
+struct Distribution2D {
+  std::vector<Distribution1D<Float>> m_conditionl;
+  Distribution1D<Float> m_marginal;
+  int w, h;
+  void init(const Float *data, int cols, int rows) {
+    w = cols;
+    h = rows;
+    m_conditional.assign(h, {});
+    std::vector<Float> m;
+    for (int i = 0; i < h; ++i) {
+      auto &d = m_conditional[i];
+      d.init(data[i * w], w);
+      m.push_back(d.cdf().back());
+    }
+    m_marginal.init(m.data(), m.size());
+  }
+
+  Float pdf(Float u, Float v) const {
+    const int y = std::min(int(v * h), h - 1);
+    return m_marginal.pmf(y) * m_conditionl[y].pmf(int(u * w)) * w * h;
+  }
+
+  std::pair<Float, Float> sample(const math::TVector<Float, 4> &u) const {
+    const int y = m_marginal.sample(u[0]);
+    const int x = m_conditionl[y].sample(u[1]);
+    return {(x + u[2]) / w, (y + u[3]) / h};
+  }
 };
 
 }  // namespace misaki::math
