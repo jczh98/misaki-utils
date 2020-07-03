@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bsphere.h"
 #include "vector.h"
 
 namespace misaki::math {
@@ -42,6 +43,11 @@ struct TBoundingBox {
 
   PointType center() const {
     return (pmin + pmax) * Value(.5f);
+  }
+
+  TBoundingSphere<Value, Size> bounding_sphere() const {
+    PointType c = center();
+    return {c, norm(c - pmax)};
   }
 
   PointType pmin, pmax;

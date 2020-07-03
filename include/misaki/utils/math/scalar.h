@@ -29,8 +29,28 @@ MSK_INLINE auto rag_to_deg(const T &v) {
 }
 
 template <typename T>
+MSK_INLINE T sqr(const T &a) {
+  return a * a;
+}
+
+template <typename T>
 MSK_INLINE auto safe_sqrt(const T &a) {
   return std::sqrt(std::max(a, T(0)));
+}
+
+template <typename T>
+MSK_INLINE auto safe_rsqrt(const T &a) {
+  return T(1) / std::sqrt(std::max(a, T(0)));
+}
+
+template <typename T>
+MSK_INLINE auto safe_asin(const T &a) {
+  return std::asin(std::min(T(1), std::max(T(-1), a)));
+}
+
+template <typename T>
+MSK_INLINE auto safe_acos(const T &a) {
+  return std::acos(std::min(T(1), std::max(T(-1), a)));
 }
 
 template <typename Predicate>

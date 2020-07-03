@@ -102,7 +102,7 @@ struct Distribution1D {
 
   uint32_t sample(Float u) const {
     const auto it = std::upper_bound(m_cdf.begin(), m_cdf.end(), u);
-    return std::clamp(int(std::distance(m_cdf. begin(), it)) - 1, 0, int(m_cdf.size()) - 2);
+    return std::clamp(int(std::distance(m_cdf.begin(), it)) - 1, 0, int(m_cdf.size()) - 2);
   }
 
   std::pair<uint32_t, Float> sample_reuse(Float u) const {
@@ -113,7 +113,7 @@ struct Distribution1D {
 
 template <typename Float>
 struct Distribution2D {
-  std::vector<Distribution1D<Float>> m_conditionl;
+  std::vector<Distribution1D<Float>> m_conditional;
   Distribution1D<Float> m_marginal;
   int w, h;
   void init(const Float *data, int cols, int rows) {
@@ -123,21 +123,23 @@ struct Distribution2D {
     std::vector<Float> m;
     for (int i = 0; i < h; ++i) {
       auto &d = m_conditional[i];
-      d.init(data[i * w], w);
+      d.init(&data[i * w], w);
       m.push_back(d.cdf().back());
     }
     m_marginal.init(m.data(), m.size());
   }
 
-  Float pdf(Float u, Float v) const {
-    const int y = std::min(int(v * h), h - 1);
-    return m_marginal.pmf(y) * m_conditionl[y].pmf(int(u * w)) * w * h;
+  Float pdf(const math::TVector<Float, 2> &u) const {
+    const int y = std::min(int(u[1] * h), h - 1);
+    return m_marginal.pmf(y) * m_conditional[y].pmf(int(u[0] * w)) * w * h;
   }
 
-  std::pair<Float, Float> sample(const math::TVector<Float, 4> &u) const {
-    const int y = m_marginal.sample(u[0]);
-    const int x = m_conditionl[y].sample(u[1]);
-    return {(x + u[2]) / w, (y + u[3]) / h};
+  std::pair<math::TVector<Float, 2>, Float> sample(const math::TVector<Float, 2> &u) const {
+    const int y = m_marginal.sample(u[1]);
+    const int x = m_conditional[y].sample(u[0]);
+    Float du1 = (u[0] - m_marginal.cdf()[y]) / (m_marginal.pmf(y) > 0.f ? m_marginal.pmf(y) : 1.f);
+    Float du2 = (u[1] - m_conditional[y].cdf()[x]) / (m_conditional[y].pmf(x) > 0.f ? m_conditional[y].pmf(x) : 1.f);
+    return {{(x + du1) / w, (y + du2) / h}, pdf(u)};
   }
 };
 
