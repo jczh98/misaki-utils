@@ -86,13 +86,18 @@ struct DiscreteDistribution {
 template <typename Float>
 struct Distribution1D {
   std::vector<Float> m_cdf{0};
+  bool m_initialized = false;
+
   void init(const Float *data, int n) {
     m_cdf.clear();
     m_cdf.push_back(0.f);
     std::partial_sum(data, data + n, std::back_inserter(m_cdf));
     const Float inv_sum = 1.f / m_cdf.back();
     for (auto &cdf : m_cdf) cdf *= inv_sum;
+    m_initialized = true;
   }
+
+  const bool initialized() const { return m_initialized; }
 
   const std::vector<Float> &cdf() const { return m_cdf; }
 
