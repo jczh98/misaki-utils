@@ -209,6 +209,11 @@ auto clamp(const TVector<Scalar, Dimension> &v, Scalar2 vmin, Scalar2 vmax) {
   return TVector<Scalar, Dimension>(v.cwiseMin(TVector<Scalar, Dimension>(vmax)).cwiseMax(TVector<Scalar, Dimension>(vmin)));
 }
 
+template <typename Scalar, int Dimension>
+auto lerp(const TVector<Scalar, Dimension> &a, const TVector<Scalar, Dimension> &b, const TVector<Scalar, Dimension> &t) {
+  return (1 - t) * a + t * b;
+}
+
 // Compute orthonormal basis
 // Based on paper "Building an Orthonormal Basis, Revisited"
 template <typename Float>

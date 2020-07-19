@@ -13,9 +13,27 @@ constexpr auto InvTwoPi = T(0.15915494309189533577);
 template <typename T>
 constexpr auto InvFourPi = T(0.07957747154594766788);
 
+template <int N, typename T>
+T power(const T &x) {
+  if constexpr (N == 0) {
+    return T(1);
+  } else if constexpr (N % 2 == 0) {
+    auto tmp = power<N / 2>(x);
+    return tmp * tmp;
+  } else {
+    auto tmp = power<N / 2>(x);
+    return tmp * tmp * x;
+  }
+}
+
 template <typename T>
 T clamp(T value, T vmin, T vmax) {
   return value < vmin ? vmin : (value > vmax ? vmax : value);
+}
+
+template <typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_INLINE T lerp(T a, T b, T t) {
+  return (1 - t) * a + t * b;
 }
 
 template <typename T>

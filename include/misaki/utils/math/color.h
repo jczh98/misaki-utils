@@ -170,4 +170,9 @@ Float luminance(const TColor<Float, 3> &c) {
   return c[0] * 0.212671f + c[1] * 0.715160f + c[2] * 0.072169f;
 }
 
+template <typename Float, int N>
+auto lerp(const TColor<Float, N> &a, const TColor<Float, N> &b, const TColor<Float, N> &t) {
+  return (1 - t) * a + t * b;
+}
+
 }  // namespace misaki::math
