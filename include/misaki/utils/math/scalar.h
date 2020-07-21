@@ -12,6 +12,10 @@ template <typename T>
 constexpr auto InvTwoPi = T(0.15915494309189533577);
 template <typename T>
 constexpr auto InvFourPi = T(0.07957747154594766788);
+template <typename T>
+constexpr auto Infinity = std::numeric_limits<T>::infinity();
+template <typename T>
+constexpr auto Epsilon = std::numeric_limits<T>::epsilon() / 2;
 
 template <int N, typename T>
 T power(const T &x) {
