@@ -24,19 +24,19 @@ struct TBoundingBox3 {
   }
 
   template <typename T>
-  void clip(const TBoundingBox<T, Size> &bbox) {
+  void clip(const TBoundingBox3<T> &bbox) {
     pmin = cwise_max(pmin, bbox.pmin);
     pmax = cwise_min(pmax, bbox.pmax);
   }
 
   template <typename T>
-  void expand(const TVector<T, Size> &p) {
+  void expand(const TVector3<T> &p) {
     pmin = cwise_min(pmin, p);
     pmax = cwise_max(pmax, p);
   }
 
   template <typename T>
-  void expand(const TBoundingBox<T, Size> &bbox) {
+  void expand(const TBoundingBox3<T> &bbox) {
     pmin = cwise_min(pmin, bbox.pmin);
     pmax = cwise_max(pmax, bbox.pmax);
   }

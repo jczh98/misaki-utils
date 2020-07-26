@@ -45,7 +45,14 @@ void test_color() {
   std::cout << col1.is_valid() << " " << col1 << std::endl;
   std::cout << col2.is_valid() << " " << col2 << " " << col2.divide_by_alpha() << std::endl;
 }
+
+void test_frame() {
+  Frame3f frame({0, 0, 1});
+  std::cout << frame << std::endl;
+}
+
 int main() {
   test_vector();
   test_color();
+  test_frame();
 }

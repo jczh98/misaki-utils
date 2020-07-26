@@ -201,6 +201,17 @@ std::ostream &operator<<(
   return oss;
 }
 
+// Compute orthonormal basis
+// Based on paper "Building an Orthonormal Basis, Revisited"
+template <typename Float>
+std::pair<TVector3<Float>, TVector3<Float>> coordinate_system(const TVector3<Float> &n) {
+  Float sign = std::copysign(1.f, n.z);
+  const Float a = -1.f / (sign + n.z);
+  const Float b = n.x * n.y * a;
+  return {{1.f + sign * n.x * n.x * a, sign * b, -sign * n.x},
+          {b, sign + n.y * n.y * a, -n.y}};
+}
+
 // Type alias
 using Vector3f = TVector3<float>;
 using Vector3d = TVector3<double>;
