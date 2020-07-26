@@ -35,9 +35,16 @@ void test_vector() {
   std::cout << vec3f.hprod() << " " << vec3f.norm() << " " << vec3f.normalize() << vec3i.clamp(4, 6) << std::endl;
   std::cout << dot(vec3f, rhs) << std::endl;
   std::cout << cross(vec3f, rhs) << std::endl;
-	std::cout << vec3f[2] << std::endl;
+  std::cout << vec3f[2] << std::endl;
 }
 
+void test_color() {
+  Color3f col1 = {0.5, 0.5, 0.5};
+  Color4f col2 = {1.0, 0.7, 0.8, 0.5};
+  std::cout << col1.is_valid() << " " << col1 << std::endl;
+  std::cout << col2.is_valid() << " " << col2 << " " << col2.divide_by_alpha() << std::endl;
+}
 int main() {
   test_vector();
+  test_color();
 }
