@@ -1,3 +1,5 @@
+#include <Eigen/Dense>
+#include <chrono>
 #include <misaki/utils/math.hpp>
 
 using namespace misaki::math;
@@ -51,8 +53,68 @@ void test_frame() {
   std::cout << frame << std::endl;
 }
 
+void test_matrix() {
+  // Matrix-matrix multiplication
+  Eigen::Matrix4f em1;
+  Eigen::Matrix4f em2;
+  Eigen::Matrix4f em0 = Eigen::Matrix4f::Zero();
+  em1 << -0.997497, 0.170019, 0.64568, 0.421003,
+      0.127171, -0.0402539, 0.49321, 0.0270699,
+      -0.613392, -0.299417, -0.651784, -0.39201,
+      0.617481, 0.791925, 0.717887, -0.970031;
+  em2 << -0.817194, 0.97705, -0.982177, 0.203528,
+      -0.271096, -0.108615, -0.24424, 0.214332,
+      -0.705374, -0.761834, 0.0633259, -0.667531,
+      -0.668203, -0.990661, 0.142369, 0.32609;
+  auto st = std::chrono::system_clock::now();
+  for (int i = 0; i < 10000; i++) {
+    em0 += em1 * em2;
+  }
+  auto ed = std::chrono::system_clock::now();
+  std::cout << em0 << " " << std::chrono::duration_cast<std::chrono::milliseconds>(ed - st).count() << std::endl;
+  Matrix4f m0 = Matrix4f::zeros();
+  Matrix4f m1 = Matrix4f(-0.997497, 0.170019, 0.64568, 0.421003,
+                         0.127171, -0.0402539, 0.49321, 0.0270699,
+                         -0.613392, -0.299417, -0.651784, -0.39201,
+                         0.617481, 0.791925, 0.717887, -0.970031);
+  Matrix4f m2 = Matrix4f(-0.817194, 0.97705, -0.982177, 0.203528,
+                         -0.271096, -0.108615, -0.24424, 0.214332,
+                         -0.705374, -0.761834, 0.0633259, -0.667531,
+                         -0.668203, -0.990661, 0.142369, 0.32609);
+  st = std::chrono::system_clock::now();
+  for (int i = 0; i < 10000; i++) {
+    m0 += m1 * m2;
+  }
+  ed = std::chrono::system_clock::now();
+  std::cout << m0 << " " << std::chrono::duration_cast<std::chrono::milliseconds>(ed - st).count() << std::endl;
+  // Matrix-vector multiplication
+  auto evec2 = Eigen::Vector4f(2, 3, 5, 6);
+  st = std::chrono::system_clock::now();
+  auto evec0 = em1 * evec2;
+  auto evec00 = evec2.transpose() * em1;
+  ed = std::chrono::system_clock::now();
+  std::cout << evec0 << " " << evec00 << " " << std::chrono::duration_cast<std::chrono::nanoseconds>(ed - st).count() << std::endl;
+  auto vec2 = Vector4f(2, 3, 5, 6);
+  st = std::chrono::system_clock::now();
+  auto vec0 = m1 * vec2;
+  ed = std::chrono::system_clock::now();
+  std::cout << vec0 << " " << std::chrono::duration_cast<std::chrono::nanoseconds>(ed - st).count() << std::endl;
+  // Matrix-scalar operation
+  std::cout << m1 + 1.f << std::endl;
+  std::cout << m1 * 3.f << std::endl;
+  auto m11 = m1; m11 *= 5.f;
+  std::cout << m11 << std::endl;
+  // Inverse
+  std::cout << em1.inverse() << std::endl;
+  std::cout << m1.inverse() << std::endl;
+  std::cout << em1.determinant() << " " << m1.determinant() << std::endl;
+  std::cout << em1.transpose() << std::endl;
+  std::cout << m1.transpose() << std::endl;
+}
+
 int main() {
-  test_vector();
-  test_color();
-  test_frame();
+  // test_vector();
+  // test_color();
+  // test_frame();
+  test_matrix();
 }
