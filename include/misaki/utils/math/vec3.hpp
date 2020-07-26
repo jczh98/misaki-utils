@@ -56,6 +56,10 @@ class TVector3 {
     return x * y * z;
   }
 
+  Value max_coeff() const noexcept { return std::max({x, y, z}); }
+
+  Value min_coeff() const noexcept { return std::min({x, y, z}); }
+
   // Unary squared_norm
   Self &operator+=(const Self &rhs) noexcept {
     x += rhs.x;
@@ -173,6 +177,16 @@ auto cross(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
       lhs.y * rhs.z - lhs.z * rhs.y,
       lhs.z * rhs.x - lhs.x * rhs.z,
       lhs.x * rhs.y - lhs.y * rhs.x);
+}
+
+template <typename Value>
+TVector3<Value> cwise_min(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
+}
+
+template <typename Value>
+TVector3<Value> cwise_max(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
 }
 
 // Stream

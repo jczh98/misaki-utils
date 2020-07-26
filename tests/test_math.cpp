@@ -36,6 +36,7 @@ void test_vector() {
   std::cout << dot(vec3f, rhs) << std::endl;
   std::cout << cross(vec3f, rhs) << std::endl;
   std::cout << vec3f[2] << std::endl;
+  std::cout << vec3f.min_coeff() << " " << vec3f.max_coeff() << std::endl;
 }
 
 void test_color() {
