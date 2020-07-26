@@ -1,58 +1,43 @@
-#include <misaki/utils/math.h>
+#include <misaki/utils/math.hpp>
 
-#include <chrono>
-#include <iostream>
-
-using namespace misaki;
+using namespace misaki::math;
 
 void test_vector() {
-  math::TVector<float, 3> i1(1, 2, 3);
-  math::TVector<int, 3> f1(i1);
-  std::cout << f1 << std::endl;
-
-  Eigen::Vector3f vv1(1, 1, 1);
-  Eigen::Vector3f vv2(1, 2, 3);
-  auto now = std::chrono::system_clock::now();
-  auto rr1 = vv1.cwiseProduct(vv2);
-  auto end = std::chrono::system_clock::now();
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << std::endl;
-
-  math::TVector<float, 3> v1(1);
-  math::TVector<float, 3> v2(1, 2, 3);
-
-  now = std::chrono::system_clock::now();
-  auto r1 = v1 * v2;
-  end = std::chrono::system_clock::now();
-  std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << std::endl;
-  auto r2 = 1 + v1;
-  auto r3 = 1 - v1;
-  auto r4 = 1 * v1;
-  auto r5 = 1 / v1;
-  auto r6 = v1 * v2;
-  auto r7 = v1 / v2;
-  std::cout << r1 << std::endl;
-  std::cout << r2 << std::endl;
-  std::cout << r3 << std::endl;
-  std::cout << r4 << std::endl;
-  std::cout << r5 << std::endl;
-  std::cout << r6 << std::endl;
-  std::cout << r7 << std::endl;
-
-  std::cout << math::clamp(v2, 1.5, 2.5) << std::endl;
-  math::TVector<float, 3> vn(1.5, 2.5, 3.5);
-  std::cout << math::floor2int(vn) << std::endl;
-}
-
-void test_tensor() {
-  using namespace misaki;
-  math::Tensor<float, 2> t2(math::TVector<int, 2>(2, 2));
-  auto t1 = math::Tensor<float, 2>::from_linear_indexed({2, 2}, [&](int i) {
-    return i * 1.5;
-  });
-  std::cout << t1.raw_data()[3] << std::endl;
+  Vector2f vec2f = {1, 2};
+  std::cout << vec2f << std::endl;
+  Vector3f vec3f = {1, 2, 3.5};
+  std::cout << vec3f << std::endl;
+  Vector3i vec3i = {3, 5, 7};
+  std::cout << vec3i << std::endl;
+  auto conv = Vector3i(vec3f);
+  std::cout << conv << std::endl;
+  // Unary test
+  vec3f -= vec3i;
+  std::cout << vec3f;
+  vec3f += 1.f;
+  std::cout << vec3f;
+  vec3f += 2;
+  std::cout << vec3f << std::endl;
+  std::cout << -vec3f << std::endl;
+  // Binary test
+  Vector3f rhs = {0.5, 0.6, 0.7};
+  auto t1 = vec3f + rhs;
+  auto t2 = vec3f - rhs;
+  auto t3 = vec3f * rhs;
+  auto t4 = vec3f / rhs;
+  std::cout << t1 << t2 << t3 << t4 << std::endl;
+  auto t5 = vec3f + 1;
+  auto t6 = vec3f - 2.f;
+  auto t7 = vec3f * 3.;
+  auto t8 = vec3f / 5u;
+  std::cout << t5 << t6 << t7 << t8 << std::endl;
+  // Math function
+  std::cout << vec3f.hprod() << " " << vec3f.norm() << " " << vec3f.normalize() << vec3i.clamp(4, 6) << std::endl;
+  std::cout << dot(vec3f, rhs) << std::endl;
+  std::cout << cross(vec3f, rhs) << std::endl;
+	std::cout << vec3f[2] << std::endl;
 }
 
 int main() {
   test_vector();
-  return 0;
 }

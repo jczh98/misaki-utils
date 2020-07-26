@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../math.h"
+#include "../eigen_math.h"
 
 namespace misaki::image {
 
