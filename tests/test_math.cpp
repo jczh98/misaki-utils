@@ -54,6 +54,7 @@ void test_frame() {
 }
 
 void test_matrix() {
+  // ----------------------------------------- Matrix4 ------------------------------------
   // Matrix-matrix multiplication
   Eigen::Matrix4f em1;
   Eigen::Matrix4f em2;
@@ -102,7 +103,8 @@ void test_matrix() {
   // Matrix-scalar operation
   std::cout << m1 + 1.f << std::endl;
   std::cout << m1 * 3.f << std::endl;
-  auto m11 = m1; m11 *= 5.f;
+  auto m11 = m1;
+  m11 *= 5.f;
   std::cout << m11 << std::endl;
   // Inverse
   std::cout << em1.inverse() << std::endl;
@@ -110,6 +112,17 @@ void test_matrix() {
   std::cout << em1.determinant() << " " << m1.determinant() << std::endl;
   std::cout << em1.transpose() << std::endl;
   std::cout << m1.transpose() << std::endl;
+  // -------------------------------------------- Matrix3 -----------------------------------------------
+  Matrix3f mat1 = Matrix3f(-0.997497, 0.170019, 0.64568,
+                           0.127171, -0.0402539, 0.49321,
+                           -0.613392, -0.299417, -0.651784);
+  Eigen::Matrix3f emat1;
+  emat1 << -0.997497, 0.170019, 0.64568,
+      0.127171, -0.0402539, 0.49321,
+      -0.613392, -0.299417, -0.651784;
+  std::cout << emat1.determinant() << " " << mat1.determinant() << std::endl;
+  std::cout << emat1.inverse() << std::endl;
+  std::cout << mat1.inverse() << std::endl;
 }
 
 int main() {
