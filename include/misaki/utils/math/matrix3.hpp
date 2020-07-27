@@ -24,11 +24,11 @@ struct TMatrix3 {
                                                             {m10, m11, m12},
                                                             {m20, m21, m22}} {}
 
-  static Self rows(const Row &r0, const Row &r1, const Row &r2) noexcept {
+  static Self from_rows(const Row &r0, const Row &r1, const Row &r2) noexcept {
     return Self(r0, r1, r2);
   }
 
-  static Self cols(const Column &c0, const Column &c1, const Column &c2) noexcept {
+  static Self from_cols(const Column &c0, const Column &c1, const Column &c2) noexcept {
     return Self(c0.x, c1.x, c2.x,
                 c0.y, c1.y, c2.y,
                 c0.z, c1.z, c2.z);
@@ -121,18 +121,24 @@ struct TMatrix3 {
   }
 
   Self transpose() const noexcept {
-    return Self::cols(data[0], data[1], data[2]);
+    return Self::from_cols(data[0], data[1], data[2]);
+  }
+
+  std::string to_string() const {
+    std::ostringstream os;
+    os << *this;
+    return os.str();
   }
 };
 
 template <typename Value>
 TMatrix3<Value> operator+(const TMatrix3<Value> &lhs, const TMatrix3<Value> &rhs) noexcept {
-  return TMatrix3<Value>::rows(lhs[0] + rhs[0], lhs[1] + rhs[1], lhs[2] + rhs[2]);
+  return TMatrix3<Value>::from_rows(lhs[0] + rhs[0], lhs[1] + rhs[1], lhs[2] + rhs[2]);
 }
 
 template <typename Value>
 TMatrix3<Value> operator-(const TMatrix3<Value> &lhs, const TMatrix3<Value> &rhs) noexcept {
-  return TMatrix3<Value>::rows(lhs[0] - rhs[0], lhs[1] - rhs[1], lhs[2] - rhs[2]);
+  return TMatrix3<Value>::from_rows(lhs[0] - rhs[0], lhs[1] - rhs[1], lhs[2] - rhs[2]);
 }
 
 template <typename Value>
@@ -147,8 +153,8 @@ TMatrix3<Value> operator*(const TMatrix3<Value> &lhs, const TMatrix3<Value> &rhs
 }
 
 template <typename Value>
-TVector4<Value> operator*(const TMatrix3<Value> &lhs, const TVector4<Value> &rhs) noexcept {
-  TVector4<Value> ret;
+TVector3<Value> operator*(const TMatrix3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+  TVector3<Value> ret;
   for (int i = 0; i < 3; ++i) {
     ret[i] = dot(lhs.row(i), rhs);
   }

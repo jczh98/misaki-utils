@@ -26,11 +26,11 @@ struct TMatrix4 {
                                                                        {m20, m21, m22, m23},
                                                                        {m30, m31, m32, m33}} {}
 
-  static Self rows(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept {
+  static Self from_rows(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept {
     return Self(r0, r1, r2, r3);
   }
 
-  static Self cols(const Column &c0, const Column &c1, const Column &c2, const Column &c3) noexcept {
+  static Self from_cols(const Column &c0, const Column &c1, const Column &c2, const Column &c3) noexcept {
     return Self(c0.x, c1.x, c2.x, c3.x,
                 c0.y, c1.y, c2.y, c3.y,
                 c0.z, c1.z, c2.z, c3.z,
@@ -315,19 +315,25 @@ struct TMatrix4 {
   }
 
   Self transpose() const noexcept {
-    return Self::cols(data[0], data[1], data[2], data[3]);
+    return Self::from_cols(data[0], data[1], data[2], data[3]);
+  }
+
+  std::string to_string() const {
+    std::ostringstream os;
+    os << *this;
+    return os.str();
   }
 };
 
 template <typename Value>
 TMatrix4<Value> operator+(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
-  return TMatrix4<Value>::rows(lhs[0] + rhs[0], lhs[1] + rhs[1],
+  return TMatrix4<Value>::from_rows(lhs[0] + rhs[0], lhs[1] + rhs[1],
                                lhs[2] + rhs[2], lhs[3] + rhs[3]);
 }
 
 template <typename Value>
 TMatrix4<Value> operator-(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
-  return TMatrix4<Value>::rows(lhs[0] - rhs[0], lhs[1] - rhs[1],
+  return TMatrix4<Value>::from_rows(lhs[0] - rhs[0], lhs[1] - rhs[1],
                                lhs[2] - rhs[2], lhs[3] - rhs[3]);
 }
 

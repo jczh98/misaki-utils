@@ -68,7 +68,7 @@ void test_matrix() {
       -0.705374, -0.761834, 0.0633259, -0.667531,
       -0.668203, -0.990661, 0.142369, 0.32609;
   auto st = std::chrono::system_clock::now();
-  for (int i = 0; i < 10000; i++) {
+  for (int i = 0; i < 1000000; i++) {
     em0 += em1 * em2;
   }
   auto ed = std::chrono::system_clock::now();
@@ -83,7 +83,7 @@ void test_matrix() {
                          -0.705374, -0.761834, 0.0633259, -0.667531,
                          -0.668203, -0.990661, 0.142369, 0.32609);
   st = std::chrono::system_clock::now();
-  for (int i = 0; i < 10000; i++) {
+  for (int i = 0; i < 1000000; i++) {
     m0 += m1 * m2;
   }
   ed = std::chrono::system_clock::now();
@@ -125,9 +125,30 @@ void test_matrix() {
   std::cout << mat1.inverse() << std::endl;
 }
 
+void test_transform() {
+  Matrix4f m1 = Matrix4f(-0.997497, 0.170019, 0.64568, 0.421003,
+                         0.127171, -0.0402539, 0.49321, 0.0270699,
+                         -0.613392, -0.299417, -0.651784, -0.39201,
+                         0.617481, 0.791925, 0.717887, -0.970031);
+  Transform4f trans(m1);
+  std::cout << trans << std::endl;
+  const auto ret = trans.apply_normal({1.f, 2.f, 3.f});
+  std::cout << ret << std::endl;
+  const auto translate = Transform4f::translate({1, 2, 3});
+  const auto rotate = Transform4f::rotate({0, 0, 1}, 90);
+  const auto scale = Transform4f::scale({2, 2, 2});
+  const auto vec = Vector3f(1, 2, 3);
+  std::cout << translate.apply_point(vec) << std::endl;
+  std::cout << scale.apply_vector(vec) << std::endl;
+  std::cout << rotate.apply_vector(vec) << std::endl;
+  std::cout << Transform4f::look_at({0, 0, 1}, {0, 0, 0}, {0, 1, 0}) << std::endl;
+  std::cout << Transform4f::perspective(30, 0.1, 10000) << std::endl;
+  std::cout << Transform3f::translate({1, 2}).apply_point({2, 1}) << std::endl;
+}
 int main() {
   // test_vector();
   // test_color();
   // test_frame();
-  test_matrix();
+  // test_matrix();
+  test_transform();
 }
