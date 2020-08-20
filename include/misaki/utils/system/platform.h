@@ -50,4 +50,26 @@ namespace misaki::system {
 #define unlikely(x) (x)
 #endif
 
+// For GPU
+#if defined(__CUDA_ARCH__)
+#define MSK_IS_GPU_CODE
+#endif
+
+#if defined(MSK_BUILD_ON_GPU) && defined(__CUDACC__)
+#ifndef MSK_NOINLINE
+#define MSK_NOINLINE __attribute__((noinline))
+#endif
+#define MSK_CPU_GPU __host__ __device__
+#define MSK_GPU __device__
+#if defined(MSK_IS_GPU_CODE)
+#define MSK_CONST __device__ const
+#else
+#define MSK_CONST const
+#endif
+#else
+#define MSK_CONST const
+#define MSK_CPU_GPU
+#define MSK_GPU
+#endif
+
 }  // namespace misaki::system
