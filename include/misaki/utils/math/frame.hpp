@@ -1,19 +1,19 @@
 #pragma once
 
 #include "../misc/string.h"
-#include "vec2.hpp"
-#include "vec3.hpp"
+#include "tuple2.hpp"
+#include "tuple3.hpp"
 
 namespace misaki::math {
 
 template <typename Float>
-struct TFrame {
-  using Vector3 = TVector3<Float>;
-  using Vector2 = TVector2<Float>;
+struct Frame {
+  using Vector3 = Vector3<Float>;
+  using Vector2 = Vector2<Float>;
 
-  Vector3 s, t, n;
+  Vector3 s = {1, 0, 0}, t = {0, 1, 0}, n = {0, 0, 1};
 
-  TFrame(const Vector3 &v) : n(v) {
+  Frame(const Vector3 &v) : n(v) {
     std::tie(s, t) = coordinate_system<Float>(v);
   }
 
@@ -54,7 +54,7 @@ struct TFrame {
 };
 
 template <typename Float>
-std::ostream &operator<<(std::ostream &os, const TFrame<Float> &f) {
+std::ostream &operator<<(std::ostream &os, const Frame<Float> &f) {
   os << "Frame[" << std::endl
      << "  s = " << f.s << "," << std::endl
      << "  t = " << f.t << "," << std::endl
@@ -62,9 +62,5 @@ std::ostream &operator<<(std::ostream &os, const TFrame<Float> &f) {
      << "]";
   return os;
 }
-
-// Type alias
-using Frame3f = TFrame<float>;
-using Frame3d = TFrame<double>;
 
 }  // namespace misaki::math

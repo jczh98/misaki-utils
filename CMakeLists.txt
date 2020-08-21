@@ -9,6 +9,8 @@ if (MSVC)
         add_compile_options("/wd4819") # Eigen half
 endif ()
 
+add_subdirectory(ext/fmt)
+
 file(GLOB_RECURSE MSK_SRC
         include/misaki/utils/*.h
         include/misaki/utils/*.hpp
@@ -18,3 +20,4 @@ add_library(misaki-utils STATIC ${MSK_SRC})
 target_include_directories(misaki-utils PUBLIC
         external/eigen
         include)
+target_link_libraries(misaki-utils PUBLIC fmt::fmt)
