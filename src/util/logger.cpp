@@ -1,4 +1,4 @@
-#include <misaki/utils/system/logger.h>
+#include <misaki/utils/util/logger.h>
 #include <stdio.h>
 
 #include <ctime>
@@ -6,7 +6,7 @@
 #include <mutex>
 #include <sstream>
 
-namespace misaki::system {
+namespace misaki::logging {
 
 LogConfig GLOBAL_LOGCONFIG;
 
@@ -86,4 +86,4 @@ void LogFatal(const char *file, int line, const char *msg) {
   abort();
 }
 
-}  // namespace misaki::system
+}  // namespace misaki::logging
