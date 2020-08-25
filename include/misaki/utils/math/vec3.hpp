@@ -10,169 +10,243 @@ class TVector3 {
   using Self = TVector3<Value>;
   Value x, y, z;
 
-  constexpr TVector3() noexcept : x(0), y(0), z(0) {}
+  MSK_CPU_GPU constexpr TVector3() noexcept : x(0), y(0), z(0) {}
 
-  constexpr TVector3(Value x, Value y, Value z) noexcept : x(x), y(y), z(z) {}
+  MSK_CPU_GPU constexpr TVector3(Value x, Value y, Value z) noexcept : x(x), y(y), z(z) {}
 
-  constexpr TVector3(Value x) noexcept : x(x), y(x), z(x) {}
+  MSK_CPU_GPU constexpr TVector3(Value x) noexcept : x(x), y(x), z(x) {}
 
   template <typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-  constexpr TVector3(const TVector3<T> &vec) noexcept : x(Value(vec.x)), y(Value(vec.y)), z(Value(vec.z)) {}
+  MSK_CPU_GPU constexpr TVector3(const TVector3<T> &vec) noexcept : x(Value(vec.x)), y(Value(vec.y)), z(Value(vec.z)) {}
 
   // Component access operation
-  Value &operator[](size_t idx) noexcept {
+  MSK_CPU_GPU Value &operator[](size_t idx) noexcept {
     return *(&x + idx);
   }
 
-  const Value &operator[](size_t idx) const noexcept {
+  MSK_CPU_GPU const Value &operator[](size_t idx) const noexcept {
     return *(&x + idx);
   }
 
   // Inline math functions
-  auto norm() const noexcept {
+  MSK_CPU_GPU auto norm() const noexcept {
     return std::sqrt(squared_norm());
   }
 
-  auto squared_norm() const noexcept {
+  MSK_CPU_GPU auto squared_norm() const noexcept {
     return x * x + y * y + z * z;
   }
 
-  Self normalize() const noexcept {
+  MSK_CPU_GPU Self normalize() const noexcept {
     static_assert(std::is_floating_point_v<Value>);
     return *this / norm();
   }
 
-  Self clamp(Value min_v, Value max_v) const noexcept {
+  MSK_CPU_GPU Self clamp(Value min_v, Value max_v) const noexcept {
     return Self(std::clamp(x, min_v, max_v),
                 std::clamp(y, min_v, max_v),
                 std::clamp(z, min_v, max_v));
   }
 
-  auto hsum() const noexcept {
+  MSK_CPU_GPU Self abs() const noexcept {
+    return Self(std::abs(x), std::abs(y), std::abs(z));
+  }
+
+  MSK_CPU_GPU Self ceil() const noexcept {
+    return Self(std::ceil(x), std::ceil(y), std::ceil(z));
+  }
+
+  MSK_CPU_GPU Self floor() const noexcept {
+    return Self(std::floor(x), std::floor(y), std::floor(z));
+  }
+
+  MSK_CPU_GPU auto hsum() const noexcept {
     return x + y + z;
   }
 
-  auto hprod() const noexcept {
+  MSK_CPU_GPU auto hprod() const noexcept {
     return x * y * z;
   }
 
-  Value max_coeff() const noexcept { return std::max({x, y, z}); }
+  MSK_CPU_GPU Value max_coeff() const noexcept { return std::max({x, y, z}); }
 
-  Value min_coeff() const noexcept { return std::min({x, y, z}); }
+  MSK_CPU_GPU Value min_coeff() const noexcept { return std::min({x, y, z}); }
 
   // Unary squared_norm
-  Self &operator+=(const Self &rhs) noexcept {
+  MSK_CPU_GPU Self &operator+=(const Self &rhs) noexcept {
     x += rhs.x;
     y += rhs.y;
     z += rhs.z;
     return *this;
   }
 
-  Self &operator-=(const Self &rhs) noexcept {
+  MSK_CPU_GPU Self &operator-=(const Self &rhs) noexcept {
     x -= rhs.x;
     y -= rhs.y;
     z -= rhs.z;
     return *this;
   }
 
-  Self &operator*=(const Self &rhs) noexcept {
+  MSK_CPU_GPU Self &operator*=(const Self &rhs) noexcept {
     x *= rhs.x;
     y *= rhs.y;
     z *= rhs.z;
     return *this;
   }
 
-  Self &operator/=(const Self &rhs) noexcept {
+  MSK_CPU_GPU Self &operator/=(const Self &rhs) noexcept {
     x /= rhs.x;
     y /= rhs.y;
     z /= rhs.z;
     return *this;
   }
 
-  Self &operator+=(Value rhs) noexcept {
+  MSK_CPU_GPU Self &operator+=(Value rhs) noexcept {
     x += rhs;
     y += rhs;
     z += rhs;
     return *this;
   }
 
-  Self &operator-=(Value rhs) noexcept {
+  MSK_CPU_GPU Self &operator-=(Value rhs) noexcept {
     x -= rhs;
     y -= rhs;
     z -= rhs;
     return *this;
   }
 
-  Self &operator*=(Value rhs) noexcept {
+  MSK_CPU_GPU Self &operator*=(Value rhs) noexcept {
     x *= rhs;
     y *= rhs;
     z *= rhs;
     return *this;
   }
 
-  Self &operator/=(Value rhs) noexcept {
+  MSK_CPU_GPU Self &operator/=(Value rhs) noexcept {
     x /= rhs;
     y /= rhs;
     z /= rhs;
     return *this;
   }
+
+  MSK_CPU_GPU bool operator==(const Self &c) const { return x == c.x && y == c.y && z == c.z; }
+  MSK_CPU_GPU bool operator!=(const Self &c) const { return x != c.x || y != c.y || z != c.z; }
 };
 
 // Unary operation
 template <typename Value>
-TVector3<Value> operator-(const TVector3<Value> &vec) noexcept {
+MSK_CPU_GPU TVector3<Value> operator-(const TVector3<Value> &vec) noexcept {
   return TVector3<Value>(-vec.x, -vec.y, -vec.z);
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto norm(const TVector3<Value> &v) {
+  return v.norm();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto squared_norm(const TVector3<Value> &v) {
+  return v.squared_norm();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto normalize(const TVector3<Value> &v) {
+  return v.normalize();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto abs(const TVector3<Value> &v) {
+  return v.abs();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto ceil(const TVector3<Value> &v) {
+  return v.ceil();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto floor(const TVector3<Value> &v) {
+  return v.floor();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto hmin(const TVector3<Value> &v) {
+  return v.min_coeff();
+}
+
+template <typename Value>
+MSK_CPU_GPU inline auto hmax(const TVector3<Value> &v) {
+  return v.max_coeff();
 }
 
 // Binary operation
 template <typename Value>
-TVector3<Value> operator+(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator+(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 }
 
 template <typename Value>
-TVector3<Value> operator-(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator-(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 }
 
 template <typename Value>
-TVector3<Value> operator*(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator*(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
 }
 
 template <typename Value>
-TVector3<Value> operator/(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator/(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
 }
 
 template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-TVector3<Value> operator+(const TVector3<Value> &lhs, T rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator+(const TVector3<Value> &lhs, T rhs) noexcept {
   return TVector3<Value>(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
 }
 
 template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-TVector3<Value> operator-(const TVector3<Value> &lhs, T rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator-(const TVector3<Value> &lhs, T rhs) noexcept {
   return TVector3<Value>(lhs.x - rhs, lhs.y - rhs, lhs.z - rhs);
 }
 
 template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-TVector3<Value> operator*(const TVector3<Value> &lhs, T rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator*(const TVector3<Value> &lhs, T rhs) noexcept {
   return TVector3<Value>(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
 
 template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-TVector3<Value> operator/(const TVector3<Value> &lhs, T rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> operator/(const TVector3<Value> &lhs, T rhs) noexcept {
   return TVector3<Value>(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 }
 
+template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_CPU_GPU TVector3<Value> operator+(T lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(lhs + rhs.x, lhs + rhs.y, lhs + rhs.z);
+}
+
+template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_CPU_GPU TVector3<Value> operator-(T lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(lhs - rhs.x, lhs - rhs.y, lhs - rhs.z);
+}
+
+template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_CPU_GPU TVector3<Value> operator*(T lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+}
+
+template <typename Value, typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_CPU_GPU TVector3<Value> operator/(T lhs, const TVector3<Value> &rhs) noexcept {
+  return TVector3<Value>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
+}
 // Math functions
 template <typename Value>
-auto dot(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU auto dot(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
 template <typename Value>
-auto cross(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU auto cross(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(
       lhs.y * rhs.z - lhs.z * rhs.y,
       lhs.z * rhs.x - lhs.x * rhs.z,
@@ -180,12 +254,12 @@ auto cross(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
 }
 
 template <typename Value>
-TVector3<Value> cwise_min(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> min(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
 }
 
 template <typename Value>
-TVector3<Value> cwise_max(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector3<Value> max(const TVector3<Value> &lhs, const TVector3<Value> &rhs) noexcept {
   return TVector3<Value>(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
 }
 
@@ -204,12 +278,12 @@ std::ostream &operator<<(
 // Compute orthonormal basis
 // Based on paper "Building an Orthonormal Basis, Revisited"
 template <typename Float>
-std::pair<TVector3<Float>, TVector3<Float>> coordinate_system(const TVector3<Float> &n) {
+MSK_CPU_GPU void coordinate_system(const TVector3<Float> &n, TVector3<Float> *v1, TVector3<Float> *v2) {
   Float sign = std::copysign(1.f, n.z);
   const Float a = -1.f / (sign + n.z);
   const Float b = n.x * n.y * a;
-  return {{1.f + sign * n.x * n.x * a, sign * b, -sign * n.x},
-          {b, sign + n.y * n.y * a, -n.y}};
+  *v1 = {1.f + sign * n.x * n.x * a, sign * b, -sign * n.x};
+  *v2 = {b, sign + n.y * n.y * a, -n.y};
 }
 
 // Type alias

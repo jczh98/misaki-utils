@@ -1,79 +1,91 @@
 #pragma once
 
+#include <stdint.h>
+
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <type_traits>
+
 #include "../system.h"
 
-namespace misaki {
-namespace math {
+namespace misaki::math {
 
 template <typename T>
-class Vector2;
+class TColor3;
 template <typename T>
-class Vector3;
+class TColor4;
 template <typename T>
-class Point3;
+class TVector2;
 template <typename T>
-class Point2;
+class TVector3;
 template <typename T>
-class Normal3;
+class TVector4;
 
-// Check for nans
-template <typename T>
-MSK_CPU_GPU inline typename std::enable_if_t<std::is_floating_point<T>::value, bool>
-is_nan(const T x) {
-  return std::isnan(x);
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto Pi = T(3.14159265358979323846);
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto InvPi = T(0.31830988618379067154);
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto InvTwoPi = T(0.15915494309189533577);
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto InvFourPi = T(0.07957747154594766788);
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto Infinity = std::numeric_limits<T>::infinity();
+template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+constexpr auto Epsilon = std::numeric_limits<T>::epsilon() / 2;
+
+template <int N, typename T>
+T power(const T &x) {
+  if constexpr (N == 0) {
+    return T(1);
+  } else if constexpr (N % 2 == 0) {
+    auto tmp = power<N / 2>(x);
+    return tmp * tmp;
+  } else {
+    auto tmp = power<N / 2>(x);
+    return tmp * tmp * x;
+  }
+}
+
+template <typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+MSK_INLINE T lerp(T a, T b, T t) {
+  return (1 - t) * a + t * b;
 }
 
 template <typename T>
-MSK_CPU_GPU inline typename std::enable_if_t<std::is_integral<T>::value, bool> is_nan(
-    const T x) {
-  return false;
-}
-
-// Math functions
-MSK_CPU_GPU inline float safe_sqrt(float x) {
-  return std::sqrt(std::max(0.f, x));
-}
-
-MSK_CPU_GPU inline double safe_sqrt(double x) {
-  return std::sqrt(std::max(0., x));
+MSK_INLINE auto deg_to_rag(const T &v) {
+  return v * T(Pi<T> / 180);
 }
 
 template <typename T>
-MSK_CPU_GPU inline constexpr T sqr(T v) {
-  return v * v;
+MSK_INLINE auto rag_to_deg(const T &v) {
+  return v * T(180 / Pi<T>);
 }
 
-// FMA
-MSK_CPU_GPU
-inline float fmadd(float a, float b, float c) {
-  return std::fma(a, b, c);
+template <typename T>
+MSK_INLINE T sqr(const T &a) {
+  return a * a;
 }
 
-MSK_CPU_GPU
-inline double fmadd(double a, double b, double c) {
-  return std::fma(a, b, c);
+template <typename T>
+MSK_INLINE auto safe_sqrt(const T &a) {
+  return std::sqrt(std::max(a, T(0)));
 }
 
-inline long double fmadd(long double a, long double b, long double c) {
-  return std::fma(a, b, c);
+template <typename T>
+MSK_INLINE auto safe_rsqrt(const T &a) {
+  return T(1) / std::sqrt(std::max(a, T(0)));
 }
 
-// Compute without errors
-template <typename Ta, typename Tb, typename Tc, typename Td>
-MSK_CPU_GPU inline auto diff_of_prod(Ta a, Tb b, Tc c, Td d) {
-  auto cd = c * d;
-  auto err = fmadd(-c, d, cd);  // Error (exact)
-  auto dop = fmadd(a, b, -cd);
-  return dop + err;
+template <typename T>
+MSK_INLINE auto safe_asin(const T &a) {
+  return std::asin(std::min(T(1), std::max(T(-1), a)));
 }
 
-template <typename Ta, typename Tb, typename Tc, typename Td>
-MSK_CPU_GPU inline auto sum_of_prod(Ta a, Tb b, Tc c, Td d) {
-  auto cd = c * d;
-  auto err = fmadd(c, d, -cd);  // Error (exact)
-  auto sop = fmadd(a, b, cd);
-  return sop + err;
+template <typename T>
+MSK_INLINE auto safe_acos(const T &a) {
+  return std::acos(std::min(T(1), std::max(T(-1), a)));
 }
 
-}  // namespace math
-}  // namespace misaki
+}  // namespace misaki::math

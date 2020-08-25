@@ -1,5 +1,7 @@
 #pragma once
 
-#include "math/common.hpp"
-#include "math/tuple2.hpp"
-#include "math/tuple3.hpp"
+#include "math/vec2.hpp"
+#include "math/vec3.hpp"
+#include "math/vec4.hpp"
+#include "math/transform3.hpp"
+#include "math/transform4.hpp"
