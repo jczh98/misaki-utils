@@ -13,98 +13,98 @@ struct TMatrix4 {
 
   Row data[4];
 
-  TMatrix4() noexcept : TMatrix4(Self::identity()) {
+  MSK_CPU_GPU TMatrix4() noexcept : TMatrix4(Self::identity()) {
   }
 
-  TMatrix4(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept : data{r0, r1, r2, r3} {}
+  MSK_CPU_GPU TMatrix4(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept : data{r0, r1, r2, r3} {}
 
-  TMatrix4(Value m00, Value m01, Value m02, Value m03,
-           Value m10, Value m11, Value m12, Value m13,
-           Value m20, Value m21, Value m22, Value m23,
-           Value m30, Value m31, Value m32, Value m33) noexcept : data{{m00, m01, m02, m03},
-                                                                       {m10, m11, m12, m13},
-                                                                       {m20, m21, m22, m23},
-                                                                       {m30, m31, m32, m33}} {}
+  MSK_CPU_GPU TMatrix4(Value m00, Value m01, Value m02, Value m03,
+                       Value m10, Value m11, Value m12, Value m13,
+                       Value m20, Value m21, Value m22, Value m23,
+                       Value m30, Value m31, Value m32, Value m33) noexcept : data{{m00, m01, m02, m03},
+                                                                                   {m10, m11, m12, m13},
+                                                                                   {m20, m21, m22, m23},
+                                                                                   {m30, m31, m32, m33}} {}
 
-  static Self from_rows(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept {
+  MSK_CPU_GPU static Self from_rows(const Row &r0, const Row &r1, const Row &r2, const Row &r3) noexcept {
     return Self(r0, r1, r2, r3);
   }
 
-  static Self from_cols(const Column &c0, const Column &c1, const Column &c2, const Column &c3) noexcept {
+  MSK_CPU_GPU static Self from_cols(const Column &c0, const Column &c1, const Column &c2, const Column &c3) noexcept {
     return Self(c0.x, c1.x, c2.x, c3.x,
                 c0.y, c1.y, c2.y, c3.y,
                 c0.z, c1.z, c2.z, c3.z,
                 c0.w, c1.w, c2.w, c3.w);
   }
 
-  static Self constant(Value val) noexcept {
+  MSK_CPU_GPU static Self constant(Value val) noexcept {
     return Self(val, val, val, val,
                 val, val, val, val,
                 val, val, val, val,
                 val, val, val, val);
   }
 
-  static Self diag(const Row &vec) noexcept {
+  MSK_CPU_GPU static Self diag(const Row &vec) noexcept {
     return Self(vec.x, 0, 0, 0,
                 0, vec.y, 0, 0,
                 0, 0, vec.z, 0,
                 0, 0, 0, vec.w);
   }
 
-  static const Self &zeros() noexcept {
+  MSK_CPU_GPU static const Self &zeros() noexcept {
     static const Self ret = Self::constant(0);
     return ret;
   }
 
-  static const Self &ones() noexcept {
+  MSK_CPU_GPU static const Self &ones() noexcept {
     static const Self ret = Self::constant(0);
     return ret;
   }
 
-  static const Self &identity() noexcept {
+  MSK_CPU_GPU static const Self &identity() noexcept {
     static const Self ret = Self::diag(1);
     return ret;
   }
   // Component access
-  Row &operator[](size_t idx) noexcept {
+  MSK_CPU_GPU Row &operator[](size_t idx) noexcept {
     return data[idx];
   }
 
-  const Row &operator[](size_t idx) const noexcept {
+  MSK_CPU_GPU const Row &operator[](size_t idx) const noexcept {
     return data[idx];
   }
 
-  Value &operator()(size_t row, size_t col) noexcept {
+  MSK_CPU_GPU Value &operator()(size_t row, size_t col) noexcept {
     return data[row][col];
   }
 
-  const Value &operator()(size_t row, size_t col) const noexcept {
+  MSK_CPU_GPU const Value &operator()(size_t row, size_t col) const noexcept {
     return data[row][col];
   }
 
-  Column col(size_t idx) const noexcept {
+  MSK_CPU_GPU Column col(size_t idx) const noexcept {
     return Column(data[0][idx], data[1][idx], data[2][idx], data[3][idx]);
   }
 
-  const Row &row(size_t idx) const noexcept {
+  MSK_CPU_GPU const Row &row(size_t idx) const noexcept {
     return data[idx];
   }
 
   // Element-wise computation
-  Self &operator+=(const Self &rhs) noexcept { return *this = *this + rhs; }
-  Self &operator-=(const Self &rhs) noexcept { return *this = *this - rhs; }
-  Self &operator*=(const Self &rhs) noexcept { return *this = *this * rhs; }
+  MSK_CPU_GPU Self &operator+=(const Self &rhs) noexcept { return *this = *this + rhs; }
+  MSK_CPU_GPU Self &operator-=(const Self &rhs) noexcept { return *this = *this - rhs; }
+  MSK_CPU_GPU Self &operator*=(const Self &rhs) noexcept { return *this = *this * rhs; }
 
-  Self &operator+=(Value rhs) noexcept { return *this = *this + rhs; }
+  MSK_CPU_GPU Self &operator+=(Value rhs) noexcept { return *this = *this + rhs; }
 
-  Self &operator-=(Value rhs) noexcept { return *this = *this - rhs; }
+  MSK_CPU_GPU Self &operator-=(Value rhs) noexcept { return *this = *this - rhs; }
 
-  Self &operator*=(Value rhs) noexcept { return *this = *this * rhs; }
+  MSK_CPU_GPU Self &operator*=(Value rhs) noexcept { return *this = *this * rhs; }
 
-  Self &operator/=(Value rhs) noexcept { return *this = *this / rhs; }
+  MSK_CPU_GPU Self &operator/=(Value rhs) noexcept { return *this = *this / rhs; }
 
   // Math operation
-  decltype(auto) determinant() const noexcept {
+  MSK_CPU_GPU decltype(auto) determinant() const noexcept {
     // This function is adopted from GLM
     /*
     ================================================================================
@@ -208,7 +208,7 @@ struct TMatrix4 {
     return dot1;
   }
 
-  Self inverse() const noexcept {
+  MSK_CPU_GPU mstd::optional<Self> inverse() const noexcept {
     // This function is adopted from GLM
     /*
     ================================================================================
@@ -309,13 +309,40 @@ struct TMatrix4 {
 
     Vector dot0(data[0] * row0);
     Value dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
-
+    if (dot1 == 0) return {};
     Value one_over_det = static_cast<Value>(1) / dot1;
     return inversed * one_over_det;
   }
 
-  Self transpose() const noexcept {
+  MSK_CPU_GPU Self transpose() const noexcept {
     return Self::from_cols(data[0], data[1], data[2], data[3]);
+  }
+
+  MSK_CPU_GPU bool operator==(const Self &m) const {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        if (data[i][j] != m.data[i][j])
+          return false;
+    return true;
+  }
+
+  MSK_CPU_GPU bool operator!=(const Self &m) const {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        if (data[i][j] != m.data[i][j])
+          return true;
+    return false;
+  }
+
+  MSK_CPU_GPU bool operator<(const Self &m) const {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j) {
+        if (data[i][j] < m.data[i][j])
+          return true;
+        if (data[i][j] > m.data[i][j])
+          return false;
+      }
+    return false;
   }
 
   std::string to_string() const {
@@ -326,19 +353,19 @@ struct TMatrix4 {
 };
 
 template <typename Value>
-TMatrix4<Value> operator+(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator+(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
   return TMatrix4<Value>::from_rows(lhs[0] + rhs[0], lhs[1] + rhs[1],
-                               lhs[2] + rhs[2], lhs[3] + rhs[3]);
+                                    lhs[2] + rhs[2], lhs[3] + rhs[3]);
 }
 
 template <typename Value>
-TMatrix4<Value> operator-(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator-(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
   return TMatrix4<Value>::from_rows(lhs[0] - rhs[0], lhs[1] - rhs[1],
-                               lhs[2] - rhs[2], lhs[3] - rhs[3]);
+                                    lhs[2] - rhs[2], lhs[3] - rhs[3]);
 }
 
 template <typename Value>
-TMatrix4<Value> operator*(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator*(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs) noexcept {
   TMatrix4<Value> ret;
   for (int r = 0; r < 4; ++r) {
     for (int c = 0; c < 4; ++c) {
@@ -349,7 +376,7 @@ TMatrix4<Value> operator*(const TMatrix4<Value> &lhs, const TMatrix4<Value> &rhs
 }
 
 template <typename Value>
-TVector4<Value> operator*(const TMatrix4<Value> &lhs, const TVector4<Value> &rhs) noexcept {
+MSK_CPU_GPU TVector4<Value> operator*(const TMatrix4<Value> &lhs, const TVector4<Value> &rhs) noexcept {
   TVector4<Value> ret;
   for (int i = 0; i < 4; ++i) {
     ret[i] = dot(lhs.row(i), rhs);
@@ -358,27 +385,27 @@ TVector4<Value> operator*(const TMatrix4<Value> &lhs, const TVector4<Value> &rhs
 }
 
 template <typename Value>
-TMatrix4<Value> operator+(const TMatrix4<Value> &lhs, Value rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator+(const TMatrix4<Value> &lhs, Value rhs) noexcept {
   return TMatrix4<Value>(lhs[0] + rhs, lhs[1] + rhs, lhs[2] + rhs, lhs[3] + rhs);
 }
 
 template <typename Value>
-TMatrix4<Value> operator-(const TMatrix4<Value> &lhs, Value rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator-(const TMatrix4<Value> &lhs, Value rhs) noexcept {
   return TMatrix4<Value>(lhs[0] - rhs, lhs[1] - rhs, lhs[2] - rhs, lhs[3] - rhs);
 }
 
 template <typename Value>
-TMatrix4<Value> operator*(const TMatrix4<Value> &lhs, Value rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator*(const TMatrix4<Value> &lhs, Value rhs) noexcept {
   return TMatrix4<Value>(lhs[0] * rhs, lhs[1] * rhs, lhs[2] * rhs, lhs[3] * rhs);
 }
 
 template <typename Value>
-TMatrix4<Value> operator/(const TMatrix4<Value> &lhs, Value rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator/(const TMatrix4<Value> &lhs, Value rhs) noexcept {
   return TMatrix4<Value>(lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhs, lhs[3] / rhs);
 }
 
 template <typename Value>
-TMatrix4<Value> operator*(Value lhs, const TMatrix4<Value> &rhs) noexcept {
+MSK_CPU_GPU TMatrix4<Value> operator*(Value lhs, const TMatrix4<Value> &rhs) noexcept {
   return rhs * lhs;
 }
 
