@@ -1,24 +1,54 @@
 #pragma once
 
-#include "tuple3.hpp"
+#include "vec3.hpp"
 
-namespace misaki {
-namespace math {
+namespace misaki::math {
 
-template <typename T>
-class BoundingBox3 {
- public:
-  MSK_CPU_GPU BoundingBox3() {
-    pmin = (std::numeric_limits<Value>::infinity());
-    pmax = (-std::numeric_limits<Value>::infinity());
+template <typename Value>
+struct TBoundingBox3 {
+  using PointType = TVector3<Value>;
+
+  MSK_CPU_GPU TBoundingBox3() { reset(); }
+  MSK_CPU_GPU TBoundingBox3(const PointType &p) {
+    this->pmin = p;
+    this->pmax = p;
   }
-  MSK_CPU_GPU explicit BoundingBox3(const Point3<T> &p) : pmin(p), pmax(p) {}
-  MSK_CPU_GPU BoundingBox3(const Point3<T> &pmin, const Point3<T> &pmax) {
+  MSK_CPU_GPU TBoundingBox3(const PointType &pmin, const PointType &pmax) {
     this->pmin = pmin;
     this->pmax = pmax;
   }
-  Point3<T> pmin, pmax;
+
+  MSK_CPU_GPU void reset() {
+    pmin = (std::numeric_limits<Value>::infinity());
+    pmax = (-std::numeric_limits<Value>::infinity());
+  }
+
+  template <typename T>
+  MSK_CPU_GPU void clip(const TBoundingBox3<T> &bbox) {
+    pmin = cwise_max(pmin, bbox.pmin);
+    pmax = cwise_min(pmax, bbox.pmax);
+  }
+
+  template <typename T>
+  MSK_CPU_GPU void expand(const TVector3<T> &p) {
+    pmin = cwise_min(pmin, p);
+    pmax = cwise_max(pmax, p);
+  }
+
+  template <typename T>
+  MSK_CPU_GPU void expand(const TBoundingBox3<T> &bbox) {
+    pmin = cwise_min(pmin, bbox.pmin);
+    pmax = cwise_max(pmax, bbox.pmax);
+  }
+
+  MSK_CPU_GPU PointType center() const {
+    return (pmin + pmax) * Value(.5f);
+  }
+
+  PointType pmin, pmax;
 };
 
-}  // namespace math
-}  // namespace misaki
+using BoundingBox3f = TBoundingBox3<float>;
+using BoundingBox3d = TBoundingBox3<double>;
+
+}  // namespace misaki::math

@@ -13,41 +13,41 @@ class TTransform3 {
   Matrix3 m_matrix = Matrix3::identity(), m_inverse_matrix = Matrix3::identity();
 
  public:
-  TTransform3() = default;
-  explicit TTransform3(const Matrix3 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
-  TTransform3(const Matrix3 &m, const Matrix3 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
+  MSK_CPU_GPU TTransform3() = default;
+  MSK_CPU_GPU explicit TTransform3(const Matrix3 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
+  MSK_CPU_GPU TTransform3(const Matrix3 &m, const Matrix3 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
 
   // Component access
-  const Matrix3 &matrix() const { return m_matrix; }
-  const Matrix3 &inverse_matrix() const { return m_inverse_matrix; }
+  MSK_CPU_GPU const Matrix3 &matrix() const { return m_matrix; }
+  MSK_CPU_GPU const Matrix3 &inverse_matrix() const { return m_inverse_matrix; }
 
-  Self inverse() const { return Self(m_inverse_matrix, m_matrix); }
+  MSK_CPU_GPU Self inverse() const { return Self(m_inverse_matrix, m_matrix); }
 
-  Vector2 apply_point(const Vector2 &point) const noexcept {
+  MSK_CPU_GPU Vector2 apply_point(const Vector2 &point) const noexcept {
     using Vector3 = TVector3<Value>;
     const auto p = m_matrix * Vector3(point.x, point.y, 1);
     return Vector2(p.x, p.y) / p.z;
   }
 
-  Vector2 apply_vector(const Vector2 &vec) const noexcept {
+  MSK_CPU_GPU Vector2 apply_vector(const Vector2 &vec) const noexcept {
     using Vector3 = TVector3<Value>;
     const auto p = m_matrix * Vector3(vec.x, vec.y, 0);
     return Vector2(p.x, p.y);
   }
 
-  Vector2 apply_normal(const Vector2 &normal) const noexcept {
+  MSK_CPU_GPU Vector2 apply_normal(const Vector2 &normal) const noexcept {
     using Vector3 = TVector3<Value>;
     const auto p = (m_inverse_matrix * Vector3(normal.x, normal.y, 0));
     return Vector2(p.x, p.y).normalize();
   }
 
-  static Self translate(const Vector2 &delta) noexcept {
+  MSK_CPU_GPU static Self translate(const Vector2 &delta) noexcept {
     Matrix3 m(1, 0, delta.x, 0, 1, delta.y, 0, 0, 1);
     Matrix3 minv(1, 0, -delta.x, 0, 1, -delta.y, 0, 0, 1);
     return Self(m, minv);
   }
 
-  static Self scale(const Vector2 &v) noexcept {
+  MSK_CPU_GPU static Self scale(const Vector2 &v) noexcept {
     Matrix3 m(v.x, 0, 0, 0, v.y, 0, 0, 0, 1);
     Matrix3 minv(1.f / v.x, 0, 0, 0, 1.f / v.y, 0, 0, 0, 1);
     return Self(m, minv);
