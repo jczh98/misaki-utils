@@ -4,6 +4,13 @@
 
 namespace mstd {
 
+template <typename T>
+MSK_CPU_GPU inline void swap(T &a, T &b) {
+  T tmp = std::move(a);
+  a = std::move(b);
+  b = std::move(tmp);
+}
+
 template <typename T, int N>
 class array {
  public:

@@ -50,5 +50,6 @@ struct TBoundingBox2 {
 
 using BoundingBox2f = TBoundingBox2<float>;
 using BoundingBox2d = TBoundingBox2<double>;
+using BoundingBox2i = TBoundingBox2<int>;
 
 }  // namespace misaki::math
