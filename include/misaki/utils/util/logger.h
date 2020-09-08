@@ -4,7 +4,7 @@
 
 #include "../system.h"
 
-namespace misaki::logging {
+namespace misaki::util {
 
 enum class LogLevel { Verbose,
                       Debug,
@@ -31,18 +31,18 @@ std::vector<GPULogItem> read_gpu_logs();
 
 extern LogConfig GLOBAL_LOGCONFIG;
 
-MSK_CPU_GPU void Log(LogLevel level, const char *file, int line, const char *s);
+MSK_XPU void Log(LogLevel level, const char *file, int line, const char *s);
 
-MSK_CPU_GPU [[noreturn]] void LogFatal(const char *file, int line, const char *s);
+MSK_XPU [[noreturn]] void LogFatal(const char *file, int line, const char *s);
 
 template <typename... Args>
-MSK_CPU_GPU inline void Log(LogLevel level, const char *file, int line, const char *fmt,
+MSK_XPU inline void Log(LogLevel level, const char *file, int line, const char *fmt,
                             Args &&... args) {
   Log(level, file, line, fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
 template <typename... Args>
-MSK_CPU_GPU [[noreturn]] inline void LogFatal(const char *file, int line,
+MSK_XPU [[noreturn]] inline void LogFatal(const char *file, int line,
                                               const char *fmt, Args &&... args) {
   LogFatal(file, line, fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
@@ -52,23 +52,23 @@ MSK_CPU_GPU [[noreturn]] inline void LogFatal(const char *file, int line,
 #else
 
 #define LogDebug(...)                                            \
-  (misaki::logging::LogLevel::Debug >= GLOBAL_LOGCONFIG.level && \
-   (misaki::logging::Log(misaki::logging::LogLevel::Debug, __FILE__, __LINE__, __VA_ARGS__), true))
+  (misaki::util::LogLevel::Debug >= misaki::util::GLOBAL_LOGCONFIG.level && \
+   (misaki::util::Log(misaki::util::LogLevel::Debug, __FILE__, __LINE__, __VA_ARGS__), true))
 
-#define LogInfo(...)                                            \
-  (misaki::logging::LogLevel::Info >= GLOBAL_LOGCONFIG.level && \
-   (misaki::logging::Log(misaki::logging::LogLevel::Info, __FILE__, __LINE__, __VA_ARGS__), true))
+#define LogInfo(...)                                                             \
+  (misaki::util::LogLevel::Info >= misaki::util::GLOBAL_LOGCONFIG.level && \
+   (misaki::util::Log(misaki::util::LogLevel::Info, __FILE__, __LINE__, __VA_ARGS__), true))
 
-#define LogWarn(...)                                            \
-  (misaki::logging::LogLevel::Warn >= GLOBAL_LOGCONFIG.level && \
-   (misaki::logging::Log(misaki::logging::LogLevel::Warn, __FILE__, __LINE__, __VA_ARGS__), true))
+#define LogWarn(...)                                                             \
+  (misaki::util::LogLevel::Warn >= misaki::util::GLOBAL_LOGCONFIG.level && \
+   (misaki::util::Log(misaki::util::LogLevel::Warn, __FILE__, __LINE__, __VA_ARGS__), true))
 
 #define LogError(...)                                            \
-  (misaki::logging::LogLevel::Error >= GLOBAL_LOGCONFIG.level && \
-   (misaki::logging::Log(misaki::logging::LogLevel::Error, __FILE__, __LINE__, __VA_ARGS__), true))
+  (misaki::util::LogLevel::Error >= misaki::util::GLOBAL_LOGCONFIG.level && \
+   (misaki::util::Log(misaki::util::LogLevel::Error, __FILE__, __LINE__, __VA_ARGS__), true))
 
-#define Fatal(...) misaki::logging::LogFatal(__FILE__, __LINE__, __VA_ARGS__)
+#define Fatal(...) misaki::util::LogFatal(__FILE__, __LINE__, __VA_ARGS__)
 
 #endif
 
-}  // namespace misaki::logging
+}  // namespace misaki::util

@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <type_traits>
 
-#include "../stl.hpp"
 #include "../system.h"
 
 namespace misaki::math {

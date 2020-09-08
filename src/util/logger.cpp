@@ -6,7 +6,7 @@
 #include <mutex>
 #include <sstream>
 
-namespace misaki::logging {
+namespace misaki::util {
 
 LogConfig GLOBAL_LOGCONFIG;
 
@@ -86,4 +86,4 @@ void LogFatal(const char *file, int line, const char *msg) {
   abort();
 }
 
-}  // namespace misaki::logging
+}  // namespace misaki::util

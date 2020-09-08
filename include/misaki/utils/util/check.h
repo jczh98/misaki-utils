@@ -2,7 +2,7 @@
 
 #include "logger.h"
 
-namespace misaki::logging {
+namespace misaki::util {
 
 #ifdef MSK_IS_GPU_CODE
 #define CHECK(x) assert(x)

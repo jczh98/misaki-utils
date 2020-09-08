@@ -13,35 +13,35 @@ class TTransform4 {
   Matrix4 m_matrix = Matrix4::identity(), m_inverse_matrix = Matrix4::identity();
 
  public:
-  MSK_CPU_GPU TTransform4() = default;
-  MSK_CPU_GPU explicit TTransform4(const Matrix4 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
-  MSK_CPU_GPU TTransform4(const Matrix4 &m, const Matrix4 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
+  MSK_XPU TTransform4() = default;
+  MSK_XPU explicit TTransform4(const Matrix4 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
+  MSK_XPU TTransform4(const Matrix4 &m, const Matrix4 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
 
   // Component access
-  MSK_CPU_GPU const Matrix4 &matrix() const { return m_matrix; }
-  MSK_CPU_GPU const Matrix4 &inverse_matrix() const { return m_inverse_matrix; }
+  MSK_XPU const Matrix4 &matrix() const { return m_matrix; }
+  MSK_XPU const Matrix4 &inverse_matrix() const { return m_inverse_matrix; }
 
-  MSK_CPU_GPU Self inverse() const { return Self(m_inverse_matrix, m_matrix); }
+  MSK_XPU Self inverse() const { return Self(m_inverse_matrix, m_matrix); }
 
-  MSK_CPU_GPU Vector3 apply_point(const Vector3 &point) const noexcept {
+  MSK_XPU Vector3 apply_point(const Vector3 &point) const noexcept {
     using Vector4 = TVector4<Value>;
     const auto p = m_matrix * Vector4(point.x, point.y, point.z, 1);
     return Vector3(p.x, p.y, p.z) / p.w;
   }
 
-  MSK_CPU_GPU Vector3 apply_vector(const Vector3 &vec) const noexcept {
+  MSK_XPU Vector3 apply_vector(const Vector3 &vec) const noexcept {
     using Vector4 = TVector4<Value>;
     const auto p = m_matrix * Vector4(vec.x, vec.y, vec.z, 0);
     return Vector3(p.x, p.y, p.z);
   }
 
-  MSK_CPU_GPU Vector3 apply_normal(const Vector3 &normal) const noexcept {
+  MSK_XPU Vector3 apply_normal(const Vector3 &normal) const noexcept {
     using Vector4 = TVector4<Value>;
     const auto p = (m_inverse_matrix * Vector4(normal.x, normal.y, normal.z, 0));
     return Vector3(p.x, p.y, p.z).normalize();
   }
 
-  MSK_CPU_GPU static Self translate(const Vector3 &delta) noexcept {
+  MSK_XPU static Self translate(const Vector3 &delta) noexcept {
     Matrix4 m(1, 0, 0, delta.x, 0, 1, 0, delta.y, 0, 0, 1, delta.z, 0, 0, 0,
               1);
     Matrix4 minv(1, 0, 0, -delta.x, 0, 1, 0, -delta.y, 0, 0, 1, -delta.z, 0,
@@ -49,13 +49,13 @@ class TTransform4 {
     return Self(m, minv);
   }
 
-  MSK_CPU_GPU static Self scale(const Vector3 &v) noexcept {
+  MSK_XPU static Self scale(const Vector3 &v) noexcept {
     Matrix4 m(v.x, 0, 0, 0, 0, v.y, 0, 0, 0, 0, v.z, 0, 0, 0, 0, 1);
     Matrix4 minv(1 / v.x, 0, 0, 0, 0, 1 / v.y, 0, 0, 0, 0, 1 / v.z, 0, 0, 0, 0, 1);
     return Self(m, minv);
   }
 
-  MSK_CPU_GPU static Self rotate(const Vector3 &axis, Value angle) noexcept {
+  MSK_XPU static Self rotate(const Vector3 &axis, Value angle) noexcept {
     const Vector3 a = axis.normalize();
     Value sin_theta = std::sin(deg_to_rag(angle));
     Value cos_theta = std::cos(deg_to_rag(angle));
@@ -78,7 +78,7 @@ class TTransform4 {
     return Self(m, m.transpose());
   }
 
-  MSK_CPU_GPU static Self look_at(const Vector3 &origin,
+  MSK_XPU static Self look_at(const Vector3 &origin,
                                   const Vector3 &target,
                                   const Vector3 &up) noexcept {
     auto dir = (target - origin).normalize();
@@ -92,7 +92,7 @@ class TTransform4 {
     return Self(result);
   }
 
-  MSK_CPU_GPU static Self perspective(Value fov, Value near_, Value far_) noexcept {
+  MSK_XPU static Self perspective(Value fov, Value near_, Value far_) noexcept {
     Value recip = 1.0f / (far_ - near_),
           cot = 1.0f / std::tan(deg_to_rag(fov / 2.0f));
     Matrix4 persp(cot, 0, 0, 0,

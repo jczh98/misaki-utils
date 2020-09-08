@@ -59,7 +59,7 @@ namespace misaki::system {
 #ifndef MSK_NOINLINE
 #define MSK_NOINLINE __attribute__((noinline))
 #endif
-#define MSK_CPU_GPU __host__ __device__
+#define MSK_XPU __host__ __device__
 #define MSK_GPU __device__
 #if defined(MSK_IS_GPU_CODE)
 #define MSK_CONST __device__ const
@@ -68,7 +68,7 @@ namespace misaki::system {
 #endif
 #else
 #define MSK_CONST const
-#define MSK_CPU_GPU
+#define MSK_XPU
 #define MSK_GPU
 #endif
 
