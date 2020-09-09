@@ -52,7 +52,7 @@ class TColor3 {
   MSK_XPU Self to_srgb() const {
     Self result;
     for (int i = 0; i < 3; ++i) {
-      Value value = this->[i];
+      Value value = this->operator[](i);
       if (value <= 0.0031308f)
         result[i] = 12.92f * value;
       else
@@ -64,7 +64,7 @@ class TColor3 {
   MSK_XPU Self to_linear() const {
     Self result;
     for (int i = 0; i < 3; ++i) {
-      Value value = this->[i];
+      Value value = this->operator[](i);
       if (value <= 0.04045f)
         result[i] = value * (1.0f / 12.92f);
       else

@@ -67,7 +67,8 @@ class TColor4 {
     r += rhs.r;
     g += rhs.g;
     b += rhs.b;
-    a += rhs.a return *this;
+    a += rhs.a;
+    return *this;
   }
 
   MSK_XPU Self &operator-=(const Self &rhs) noexcept {

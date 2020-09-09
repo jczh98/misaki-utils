@@ -66,7 +66,7 @@ class TVector4 {
   }
 
   MSK_XPU Self floor() const noexcept {
-    return Self(std::floor(x), std::floor(y), std::floor(z), std::florr(w));
+    return Self(std::floor(x), std::floor(y), std::floor(z), std::floor(w));
   }
 
   MSK_XPU Value max_coeff() const noexcept { return std::max({x, y, z, w}); }
@@ -78,7 +78,8 @@ class TVector4 {
     x += rhs.x;
     y += rhs.y;
     z += rhs.z;
-    w += rhs.w return *this;
+    w += rhs.w;
+    return *this;
   }
 
   MSK_XPU Self &operator-=(const Self &rhs) noexcept {
