@@ -10,12 +10,15 @@ class TTransform3 {
   using Matrix3 = TMatrix3<Value>;
   using Vector2 = TVector2<Value>;
   using Self = TTransform3<Value>;
-  Matrix3 m_matrix = Matrix3::identity(), m_inverse_matrix = Matrix3::identity();
+  Matrix3 m_matrix = Matrix3::identity(),
+          m_inverse_matrix = Matrix3::identity();
 
  public:
   MSK_XPU TTransform3() = default;
-  MSK_XPU explicit TTransform3(const Matrix3 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
-  MSK_XPU TTransform3(const Matrix3 &m, const Matrix3 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
+  MSK_XPU explicit TTransform3(const Matrix3 &m)
+      : m_matrix(m), m_inverse_matrix(m.inverse()) {}
+  MSK_XPU TTransform3(const Matrix3 &m, const Matrix3 &inv_m)
+      : m_matrix(m), m_inverse_matrix(inv_m) {}
 
   // Component access
   MSK_XPU const Matrix3 &matrix() const { return m_matrix; }
@@ -63,10 +66,19 @@ class TTransform3 {
 template <typename Value>
 std::ostream &operator<<(std::ostream &oss, const TTransform3<Value> &t) {
   oss << "Transform[" << std::endl;
-  oss << "  matrix = " << string::indent(t.matrix().to_string(), 11) << "," << std::endl;
-  oss << "  inverse_matrix = " << string::indent(t.inverse_matrix().to_string(), 19) << "," << std::endl;
+  oss << "  matrix = " << string::indent(t.matrix().to_string(), 11) << ","
+      << std::endl;
+  oss << "  inverse_matrix = "
+      << string::indent(t.inverse_matrix().to_string(), 19) << "," << std::endl;
   oss << "]";
   return oss;
+}
+
+template <typename Value>
+MSK_XPU TTransform3<Value> operator*(const TTransform3<Value> &lhs,
+                                     const TTransform3<Value> &rhs) noexcept {
+  return TTransform3<Value>(lhs.m_matrix * rhs.m_matrix,
+                            lhs.m_inverse_matrix * rhs.m_inverse_matrix);
 }
 
 // Type alias

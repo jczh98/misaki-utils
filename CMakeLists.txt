@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus /std:c++17")
-        add_compile_options("/wd4819") # Eigen half
 endif ()
 
 add_subdirectory(ext/fmt)
@@ -18,6 +17,5 @@ file(GLOB_RECURSE MSK_SRC
 
 add_library(misaki-utils STATIC ${MSK_SRC})
 target_include_directories(misaki-utils PUBLIC
-        external/eigen
         include)
 target_link_libraries(misaki-utils PUBLIC fmt::fmt)

@@ -10,12 +10,15 @@ class TTransform4 {
   using Matrix4 = TMatrix4<Value>;
   using Vector3 = TVector3<Value>;
   using Self = TTransform4<Value>;
-  Matrix4 m_matrix = Matrix4::identity(), m_inverse_matrix = Matrix4::identity();
+  Matrix4 m_matrix = Matrix4::identity(),
+          m_inverse_matrix = Matrix4::identity();
 
  public:
   MSK_XPU TTransform4() = default;
-  MSK_XPU explicit TTransform4(const Matrix4 &m) : m_matrix(m), m_inverse_matrix(m.inverse()) {}
-  MSK_XPU TTransform4(const Matrix4 &m, const Matrix4 &inv_m) : m_matrix(m), m_inverse_matrix(inv_m) {}
+  MSK_XPU explicit TTransform4(const Matrix4 &m)
+      : m_matrix(m), m_inverse_matrix(m.inverse()) {}
+  MSK_XPU TTransform4(const Matrix4 &m, const Matrix4 &inv_m)
+      : m_matrix(m), m_inverse_matrix(inv_m) {}
 
   // Component access
   MSK_XPU const Matrix4 &matrix() const { return m_matrix; }
@@ -37,21 +40,22 @@ class TTransform4 {
 
   MSK_XPU Vector3 apply_normal(const Vector3 &normal) const noexcept {
     using Vector4 = TVector4<Value>;
-    const auto p = (m_inverse_matrix * Vector4(normal.x, normal.y, normal.z, 0));
+    const auto p =
+        (m_inverse_matrix * Vector4(normal.x, normal.y, normal.z, 0));
     return Vector3(p.x, p.y, p.z).normalize();
   }
 
   MSK_XPU static Self translate(const Vector3 &delta) noexcept {
-    Matrix4 m(1, 0, 0, delta.x, 0, 1, 0, delta.y, 0, 0, 1, delta.z, 0, 0, 0,
-              1);
-    Matrix4 minv(1, 0, 0, -delta.x, 0, 1, 0, -delta.y, 0, 0, 1, -delta.z, 0,
-                 0, 0, 1);
+    Matrix4 m(1, 0, 0, delta.x, 0, 1, 0, delta.y, 0, 0, 1, delta.z, 0, 0, 0, 1);
+    Matrix4 minv(1, 0, 0, -delta.x, 0, 1, 0, -delta.y, 0, 0, 1, -delta.z, 0, 0,
+                 0, 1);
     return Self(m, minv);
   }
 
   MSK_XPU static Self scale(const Vector3 &v) noexcept {
     Matrix4 m(v.x, 0, 0, 0, 0, v.y, 0, 0, 0, 0, v.z, 0, 0, 0, 0, 1);
-    Matrix4 minv(1 / v.x, 0, 0, 0, 0, 1 / v.y, 0, 0, 0, 0, 1 / v.z, 0, 0, 0, 0, 1);
+    Matrix4 minv(1 / v.x, 0, 0, 0, 0, 1 / v.y, 0, 0, 0, 0, 1 / v.z, 0, 0, 0, 0,
+                 1);
     return Self(m, minv);
   }
 
@@ -78,27 +82,22 @@ class TTransform4 {
     return Self(m, m.transpose());
   }
 
-  MSK_XPU static Self look_at(const Vector3 &origin,
-                                  const Vector3 &target,
-                                  const Vector3 &up) noexcept {
+  MSK_XPU static Self look_at(const Vector3 &origin, const Vector3 &target,
+                              const Vector3 &up) noexcept {
     auto dir = (target - origin).normalize();
     auto left = cross(dir, up.normalize()).normalize();
     auto new_up = cross(dir, left).normalize();
     Matrix4 result = Matrix4::from_cols(
-        {left.x, left.y, left.z, 0},
-        {new_up.x, new_up.y, new_up.z, 0},
-        {dir.x, dir.y, dir.z, 0},
-        {origin.x, origin.y, origin.z, 1});
+        {left.x, left.y, left.z, 0}, {new_up.x, new_up.y, new_up.z, 0},
+        {dir.x, dir.y, dir.z, 0}, {origin.x, origin.y, origin.z, 1});
     return Self(result);
   }
 
   MSK_XPU static Self perspective(Value fov, Value near_, Value far_) noexcept {
     Value recip = 1.0f / (far_ - near_),
           cot = 1.0f / std::tan(deg_to_rag(fov / 2.0f));
-    Matrix4 persp(cot, 0, 0, 0,
-                  0, cot, 0, 0,
-                  0, 0, far_ * recip, -near_ * far_ * recip,
-                  0, 0, 1, 0);
+    Matrix4 persp(cot, 0, 0, 0, 0, cot, 0, 0, 0, 0, far_ * recip,
+                  -near_ * far_ * recip, 0, 0, 1, 0);
     return Self(persp);
   }
 
@@ -112,10 +111,19 @@ class TTransform4 {
 template <typename Value>
 std::ostream &operator<<(std::ostream &oss, const TTransform4<Value> &t) {
   oss << "Transform[" << std::endl;
-  oss << "  matrix = " << string::indent(t.matrix().to_string(), 11) << "," << std::endl;
-  oss << "  inverse_matrix = " << string::indent(t.inverse_matrix().to_string(), 19) << "," << std::endl;
+  oss << "  matrix = " << string::indent(t.matrix().to_string(), 11) << ","
+      << std::endl;
+  oss << "  inverse_matrix = "
+      << string::indent(t.inverse_matrix().to_string(), 19) << "," << std::endl;
   oss << "]";
   return oss;
+}
+
+template <typename Value>
+MSK_XPU TTransform4<Value> operator*(const TTransform4<Value> &lhs,
+                                     const TTransform4<Value> &rhs) noexcept {
+  return TTransform4<Value>(lhs.m_matrix * rhs.m_matrix,
+                            lhs.m_inverse_matrix * rhs.m_inverse_matrix);
 }
 
 // Type alias
