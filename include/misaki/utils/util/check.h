@@ -17,7 +17,7 @@ namespace misaki::util {
 
 #else
 
-#define CHECK(x) (!(!(x) && (Fatal("Check failed: %s", #x), true)))
+#define CHECK(x) (!(!(x) && (Fatal("Check failed: {}", #x), true)))
 
 #define CHECK_IMPL(a, b, op)                                                 \
   do {                                                                       \
