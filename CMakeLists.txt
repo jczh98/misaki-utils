@@ -15,6 +15,18 @@ file(GLOB_RECURSE MSK_SRC
         include/misaki/utils/*.hpp
         src/*/*.cpp)
 
+if(NOT WIN32)
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+			set(LINKER_FLAGS "-lc++fs -pthread")
+		else()
+			set(LINKER_FLAG "-lstdc++fs -pthread")
+		endif()
+	elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+		set(LINKER_FLAG "-lstdc++fs -pthread")
+	endif()
+endif()
+
 add_library(misaki-utils STATIC ${MSK_SRC})
 target_include_directories(misaki-utils PUBLIC
         include)

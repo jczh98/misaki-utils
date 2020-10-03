@@ -105,6 +105,19 @@ class StaticArrayBase {
   GEN_ARITH_OP(/, /=)
 #undef GEN_ARITH_OP
 
+  MSK_XPU friend Derived operator+(const Value &v, const Derived &rhs) {
+    return Derived(v) + rhs;
+  }
+  MSK_XPU friend Derived operator-(const Value &v, const Derived &rhs) {
+    return Derived(v) - rhs;
+  }
+  MSK_XPU friend Derived operator*(const Value &v, const Derived &rhs) {
+    return Derived(v) * rhs;
+  }
+  MSK_XPU friend Derived operator/(const Value &v, const Derived &rhs) {
+    return Derived(v) / rhs;
+  }
+
 #define GEN_CMP_OP(op)                                                      \
   MSK_XPU MaskType operator op(const Derived &rhs) const {                  \
     MaskType ret;                                                           \
@@ -130,6 +143,18 @@ class StaticArrayBase {
   // Component acess
   MSK_XPU Value &coeff(size_t i) { return m_data[i]; }
   MSK_XPU const Value &coeff(size_t i) const { return m_data[i]; }
+
+  // Recursive array indexing operator (const)
+  template <typename... Args, std::enable_if_t<(sizeof...(Args) >= 1), int> = 0>
+  MSK_XPU decltype(auto) coeff(size_t i0, Args... other) const {
+    return coeff(i0).coeff(size_t(other)...);
+  }
+
+  // Recursive array indexing operator
+  template <typename... Args, std::enable_if_t<(sizeof...(Args) >= 1), int> = 0>
+  MSK_XPU decltype(auto) coeff(size_t i0, Args... other) {
+    return coeff(i0).coeff(size_t(other)...);
+  }
 
   MSK_XPU decltype(auto) x() const {
     static_assert(Size >= 1, "StaticArrayBase::x(): requires Size >= 1");
@@ -238,7 +263,7 @@ std::ostream &operator<<(std::ostream &oss,
   return oss;
 }
 
-#define MSK_ARRAY_IMPORT(Base, Array)        \
+#define MSK_ARRAY_IMPORT_BASIC(Base, Array)  \
   Array(const Array &) = default;            \
   Array(Array &&) = default;                 \
   Array &operator=(const Array &) = default; \
@@ -246,8 +271,11 @@ std::ostream &operator<<(std::ostream &oss,
   using typename Base::Value;                \
   using typename Base::Derived;              \
   using Base::Size;                          \
-  using Base::derived;                       \
-  using Base::Base;                          \
+  using Base::derived;
+
+#define MSK_ARRAY_IMPORT(Base, Array) \
+  MSK_ARRAY_IMPORT_BASIC(Base, Array) \
+  using Base::Base;                   \
   using Base::operator=;
 
 template <typename Value_, size_t Size_>
