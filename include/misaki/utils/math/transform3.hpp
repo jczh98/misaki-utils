@@ -78,7 +78,7 @@ template <typename Value>
 MSK_XPU TTransform3<Value> operator*(const TTransform3<Value> &lhs,
                                      const TTransform3<Value> &rhs) noexcept {
   return TTransform3<Value>(lhs.matrix() * rhs.matrix(),
-                            lhs.inverse_matrix() * rhs.inverse_matrix();
+                            lhs.inverse_matrix() * rhs.inverse_matrix());
 }
 
 // Type alias

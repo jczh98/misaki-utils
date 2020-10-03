@@ -21,11 +21,12 @@ fs::path FileResolver::resolve(const fs::path &path) const {
 }
 
 bool FileResolver::contains(const fs::path &p) const {
-  return std::find(m_paths.begin(), m_paths.end(), p) != m_paths.end();
+  return true;
+  //return std::find(m_paths.begin(), m_paths.end(), p) != m_paths.end();
 }
 
 void FileResolver::erase(const fs::path &p) {
-  m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), p), m_paths.end());
+  //m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), p), m_paths.end());
 }
 
 std::string FileResolver::to_string() const {

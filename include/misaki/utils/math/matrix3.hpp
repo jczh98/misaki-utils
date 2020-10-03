@@ -205,7 +205,7 @@ MSK_XPU TMatrix3<Value> operator*(const TMatrix3<Value> &lhs, Value rhs) noexcep
 
 template <typename Value>
 MSK_XPU TMatrix3<Value> operator/(const TMatrix3<Value> &lhs, Value rhs) noexcept {
-  return TMatrix3<Value>(lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhss);
+  return TMatrix3<Value>(lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhs);
 }
 
 template <typename Value>

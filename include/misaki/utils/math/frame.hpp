@@ -27,19 +27,31 @@ struct TFrame {
 
   MSK_XPU static Float cos_theta(const Vector3 &v) { return v.z; }
   MSK_XPU static Float cos_theta_2(const Vector3 &v) { return math::sqr(v.z); }
-  MSK_XPU static Float sin_theta(const Vector3 &v) { return math::safe_sqrt(sin_theta_2(v)); }
-  MSK_XPU static Float sin_theta_2(const Vector3 &v) { return math::sqr(v.x) + math::sqr(v.y); }
-  MSK_XPU static Float tan_theta(const Vector3 &v) { return math::safe_sqrt(1.f - math::sqr(v.z)) / v.z; }
-  MSK_XPU static Float tan_theta_2(const Vector3 &v) { return std::max(0.f, 1.f - math::sqr(v.z)) / math::sqr(v.z); }
+  MSK_XPU static Float sin_theta(const Vector3 &v) {
+    return math::safe_sqrt(sin_theta_2(v));
+  }
+  MSK_XPU static Float sin_theta_2(const Vector3 &v) {
+    return math::sqr(v.x) + math::sqr(v.y);
+  }
+  MSK_XPU static Float tan_theta(const Vector3 &v) {
+    return math::safe_sqrt(1.f - math::sqr(v.z)) / v.z;
+  }
+  MSK_XPU static Float tan_theta_2(const Vector3 &v) {
+    return std::max(0.f, 1.f - math::sqr(v.z)) / math::sqr(v.z);
+  }
   MSK_XPU static Float sin_phi(const Vector3 &v) {
     Float sin_theta_2 = TFrame::sin_theta_2(v),
           inv_sin_theta = math::safe_rsqrt(TFrame::sin_theta_2(v));
-    return std::abs(sin_theta_2) <= 4.f * Epsilon<Float> ? 0.f : std::clamp(v.y * inv_sin_theta, -1.f, 1.f);
+    return std::abs(sin_theta_2) <= 4.f * Epsilon<Float>
+               ? 0.f
+               : std::clamp(v.y * inv_sin_theta, -1.f, 1.f);
   }
   MSK_XPU static Float cos_phi(const Vector3 &v) {
     Float sin_theta_2 = TFrame::sin_theta_2(v),
           inv_sin_theta = math::safe_rsqrt(TFrame::sin_theta_2(v));
-    return std::abs(sin_theta_2) <= 4.f * Epsilon<Float> ? 1.f : std::clamp(v.x * inv_sin_theta, -1.f, 1.f);
+    return std::abs(sin_theta_2) <= 4.f * Epsilon<Float>
+               ? 1.f
+               : std::clamp(v.x * inv_sin_theta, -1.f, 1.f);
   }
   static std::pair<Float, Float> sincos_phi(const Vector3 &v) {
     Float sin_theta_2 = TFrame::sin_theta_2(v),
@@ -47,7 +59,9 @@ struct TFrame {
 
     Vector2 result = {v.x * inv_sin_theta, v.y * inv_sin_theta};
 
-    result = std::abs(sin_theta_2) <= 4.f * Epsilon<Float> ? Vector2(1.f, 0.f) : math::clamp(result, -1.f, 1.f);
+    result = std::abs(sin_theta_2) <= 4.f * Epsilon<Float>
+                 ? Vector2(1.f, 0.f)
+                 : std::clamp(result, -1.f, 1.f);
 
     return {result.y, result.x};
   }

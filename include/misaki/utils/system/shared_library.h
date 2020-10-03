@@ -2,7 +2,7 @@
 
 #include "platform.h"
 #include <string>
-#if defined(MSK_PLATFORM_WINDOWS)
+#if MSK_PLATFORM_WINDOWS
 #include <Windows.h>
 #else
 #include <dlfcn.h>
@@ -19,7 +19,7 @@ class SharedLibrary {
   SharedSymbolPtr load_symbol(const std::string &func_name);
  private:
   std::string path;
-#if defined(MSK_PLATFORM_WINDOWS)
+#if MSK_PLATFORM_WINDOWS
   HMODULE handle;
 #else
   void *handle;
