@@ -201,6 +201,16 @@ class StaticArrayBase {
 };
 
 // Array math
+template <typename Value, size_t Size, typename Derived>
+MSK_XPU Value dot(const StaticArrayBase<Value, Size, Derived> &a1,
+                  const StaticArrayBase<Value, Size, Derived> &a2) {
+  Value s = a1.coeff(0) * a2.coeff(0);
+  for (int i = 1; i < Size; i++) {
+    s += a1.coeff(i) * a2.coeff(i);
+  }
+  return s;
+}
+
 template <typename Value, size_t Size, typename Derived, class F>
 MSK_XPU Value reduce(const StaticArrayBase<Value, Size, Derived> &a, F &&f) {
   Value acc = a.coeff(0);
